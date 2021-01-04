@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,15 +29,9 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity {
     private EditText urlInputField;
     private Button fetchBtn;
-    private ImageView imageView1;
-    private ImageView imageView2;
-    private ImageView imageView3;
-    private ImageView imageView4;
-    private ImageView imageView5;
-    private ImageView imageView6;
-    private ImageView imageView7;
-    private ImageView imageView8;
-    private ImageView imageView9;
+    private ImageView image1, image2, image3, image4, image5, image6, image7, image8,
+                        image9, image10, image11, image12, image13, image14, image15,
+                        image16, image17, image18, image19, image20;
     private List<ImageView> imageViewList = new ArrayList<>();
     private String urlInput;
 
@@ -54,24 +49,15 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        imageView1 = findViewById(R.id.imageView1);
-        imageViewList.add(imageView1);
-        imageView2 = findViewById(R.id.imageView2);
-        imageViewList.add(imageView2);
-        imageView3 = findViewById(R.id.imageView3);
-        imageViewList.add(imageView3);
-        imageView4 = findViewById(R.id.imageView4);
-        imageViewList.add(imageView4);
-        imageView5 = findViewById(R.id.imageView5);
-        imageViewList.add(imageView5);
-        imageView6 = findViewById(R.id.imageView6);
-        imageViewList.add(imageView6);
-        imageView7 = findViewById(R.id.imageView7);
-        imageViewList.add(imageView7);
-        imageView8 = findViewById(R.id.imageView8);
-        imageViewList.add(imageView8);
-        imageView9 = findViewById(R.id.imageView9);
-        imageViewList.add(imageView9);
+        for (int i=1; i<=20; i++) {
+            String imageID = "image" + i;
+            int resID = getResources().getIdentifier(imageID, "id", getPackageName());
+            imageViewList.add(findViewById(resID));
+        }
+        //image1 = findViewById(R.id.image1);
+        //imageViewList.add(image1);
+        //image2 = findViewById(R.id.image2);
+        //imageViewList.add(image2);
 
         urlInputField = findViewById(R.id.urlInput);
         urlInput = urlInputField.getText().toString();
