@@ -29,13 +29,8 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity {
     private EditText urlInputField;
     private Button fetchBtn;
-    private ImageView image1, image2, image3, image4, image5, image6, image7, image8,
-                        image9, image10, image11, image12, image13, image14, image15,
-                        image16, image17, image18, image19, image20;
     private List<ImageView> imageViewList = new ArrayList<>();
     private String urlInput;
-
-    private final int NUMBER_OF_IMAGES = 9;
 
     private static final String IMGURL_REG = "<img.*src=\"(.*?)\"";
     private static final String IMGSRC_REG = "[a-zA-z]+://[^\\s]*";
@@ -54,10 +49,6 @@ public class MainActivity extends AppCompatActivity {
             int resID = getResources().getIdentifier(imageID, "id", getPackageName());
             imageViewList.add(findViewById(resID));
         }
-        //image1 = findViewById(R.id.image1);
-        //imageViewList.add(image1);
-        //image2 = findViewById(R.id.image2);
-        //imageViewList.add(image2);
 
         urlInputField = findViewById(R.id.urlInput);
         urlInput = urlInputField.getText().toString();
@@ -116,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                                 imageViewList.get(counter).setImageBitmap(image);
                             counter += 1;
                         }
-                        if (imageDownloadLinks.size() == NUMBER_OF_IMAGES) break;
+                        if (imageDownloadLinks.size() == imageViewList.size()) break;
                     }
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
