@@ -83,52 +83,61 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            runOnUiThread(() -> {
-                List<String> imageDownloadLinks = new ArrayList<>();
-                try {
-                    URL url = new URL(urlInput);
-                    URLConnection urlConnection = url.openConnection();
-                    urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36)");
-                    InputStream inputStream = urlConnection.getInputStream();
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(inputStream));
-                    String line = null;
-                    StringBuffer sb = new StringBuffer();
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line, 0, line.length());
-                        sb.append('\n');
-                    }
-                    reader.close();
-                    inputStream.close();
-                    Matcher matcher = Pattern.compile(IMGURL_REG).matcher(sb.toString());
-                    List<String> listimgurl = new ArrayList<>();
-                    while (matcher.find()) {
-                        listimgurl.add(matcher.group());
-                    }
-                    int counter = 0;
+            List<String> imageDownloadLinks = new ArrayList<>();
+            try {
+                URL url = new URL(urlInput);
+                URLConnection urlConnection = url.openConnection();
+                urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36)");
+                InputStream inputStream = urlConnection.getInputStream();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(inputStream));
+                String line = null;
+                StringBuffer sb = new StringBuffer();
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line, 0, line.length());
+                    sb.append('\n');
+                }
+                reader.close();
+                inputStream.close();
+                Matcher matcher = Pattern.compile(IMGURL_REG).matcher(sb.toString());
+                List<String> listimgurl = new ArrayList<>();
+                while (matcher.find()) {
+                    listimgurl.add(matcher.group());
+                }
+                int counter = 0;
+                runOnUiThread(() -> {
                     progressBar.setVisibility(View.VISIBLE);
                     progressText.setText("Downloading 1 of 20 images");
-                    for (String imgurl : listimgurl) {
-                        Matcher matc = Pattern.compile(IMGSRC_REG).matcher(imgurl);
-                        while (matc.find()) {
-                            imageDownloadLinks.add(matc.group().substring(0, matc.group().length() - 1));
-                            Bitmap image = BitmapFactory.decodeStream((InputStream) new URL(imageDownloadLinks.get(counter)).getContent());
-                            if (image != null) {
-                                imageViewList.get(counter).setImageBitmap(image);
-                                counter += 1;
+                });
+                for (String imgurl : listimgurl) {
+                    Matcher matc = Pattern.compile(IMGSRC_REG).matcher(imgurl);
+                    while (matc.find()) {
+                        imageDownloadLinks.add(matc.group().substring(0, matc.group().length() - 1));
+                        Bitmap image = BitmapFactory.decodeStream((InputStream) new URL(imageDownloadLinks.get(counter)).getContent());
+                        if (image != null)
+                        {
+                            final int threadCounter1 = counter;
+                            runOnUiThread(() -> {
+                                imageViewList.get(threadCounter1).setImageBitmap(image);
+                            });
+                            counter += 1;
+                            final int threadCounter2 = counter;
+                            runOnUiThread(() -> {
                                 progressBar.incrementProgressBy(5);
-                                progressText.setText("Downloading "+ counter + " of 20 images");
-
-                            }
+                                progressText.setText("Downloading "+ threadCounter2 +
+                                        " of 20 images");
+                            });
                         }
-                        if (imageDownloadLinks.size() == imageViewList.size()) break;
                     }
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    if (imageDownloadLinks.size() == imageViewList.size()) break;
                 }
-            });
+                }
+            catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
             Void v = null;
             return v;
         }
