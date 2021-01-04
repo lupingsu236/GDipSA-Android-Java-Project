@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CAproject</string>
+    <string name="enter_link">Enter link...</string>
+    <string name="fetch">Fetch</string>
+    <string name="img_desc">Image to be downloaded from link</string>
+    <string name="downloading_msg">Downloading 5 of 20 images...</string>
 </resources>
