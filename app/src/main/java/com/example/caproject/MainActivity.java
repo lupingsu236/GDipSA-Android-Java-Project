@@ -7,10 +7,13 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private Button fetchBtn;
     private List<ImageView> imageViewList = new ArrayList<>();
     private String urlInput;
+    private ProgressBar progressBar;
+    private TextView progressText;
 
     private static final String IMGURL_REG = "<img.*src=\"(.*?)\"";
     private static final String IMGSRC_REG = "[a-zA-z]+://[^\\s]*";
@@ -56,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         fetchBtn = findViewById(R.id.fetchBtn);
         fetchBtn.setOnClickListener(view -> fetchImageLinksIfUrlIsNonEmpty());
 
+        progressBar = findViewById(R.id.progressBar);
+        progressText = findViewById(R.id.progressText);
+
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
@@ -63,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         if (!urlInput.isEmpty()) {
             new ExtractImageLinksFromHTML(urlInput).execute();
         } else
-            Toast.makeText(this, "Please enter a url", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter url", Toast.LENGTH_SHORT).show();
     }
 
     public class ExtractImageLinksFromHTML extends AsyncTask<Void, Void, Void> {
@@ -98,14 +106,20 @@ public class MainActivity extends AppCompatActivity {
                         listimgurl.add(matcher.group());
                     }
                     int counter = 0;
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressText.setText("Downloading 1 of 20 images");
                     for (String imgurl : listimgurl) {
                         Matcher matc = Pattern.compile(IMGSRC_REG).matcher(imgurl);
                         while (matc.find()) {
                             imageDownloadLinks.add(matc.group().substring(0, matc.group().length() - 1));
                             Bitmap image = BitmapFactory.decodeStream((InputStream) new URL(imageDownloadLinks.get(counter)).getContent());
-                            if (image != null)
+                            if (image != null) {
                                 imageViewList.get(counter).setImageBitmap(image);
-                            counter += 1;
+                                counter += 1;
+                                progressBar.incrementProgressBy(5);
+                                progressText.setText("Downloading "+ counter + " of 20 images");
+
+                            }
                         }
                         if (imageDownloadLinks.size() == imageViewList.size()) break;
                     }
@@ -121,8 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void v) {
-            Toast.makeText(MainActivity.this, "Task done",
-                    Toast.LENGTH_SHORT).show();
+            progressText.setText("Download completed!");
         }
     }
 }
