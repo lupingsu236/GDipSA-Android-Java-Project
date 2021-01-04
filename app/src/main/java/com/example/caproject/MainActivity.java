@@ -17,13 +17,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
     private EditText urlInputField;
     private Button fetchBtn;
     private ImageView imageView1;
@@ -40,9 +42,11 @@ public class MainActivity extends AppCompatActivity
 
     private final int NUMBER_OF_IMAGES = 9;
 
+    private static final String IMGURL_REG = "<img.*src=\"(.*?)\"";
+    private static final String IMGSRC_REG = "[a-zA-z]+://[^\\s]*";
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -77,63 +81,60 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void fetchImageLinksIfUrlIsNonEmpty()
-    {
+    public void fetchImageLinksIfUrlIsNonEmpty() {
         urlInput = urlInputField.getText().toString();
-        if (!urlInput.isEmpty())
-        {
+        if (!urlInput.isEmpty()) {
             new ExtractImageLinksFromHTML(urlInput).execute();
-        }
-        else
+        } else
             Toast.makeText(this, "Please enter a url", Toast.LENGTH_SHORT).show();
     }
 
-    public class ExtractImageLinksFromHTML extends AsyncTask<Void, Void, Void>
-    {
+    public class ExtractImageLinksFromHTML extends AsyncTask<Void, Void, Void> {
         private String urlInput;
 
-        public ExtractImageLinksFromHTML(String urlInput)
-        {
+        public ExtractImageLinksFromHTML(String urlInput) {
             this.urlInput = urlInput;
         }
 
         @Override
-        protected Void doInBackground(Void... params)
-        {
+        protected Void doInBackground(Void... params) {
             runOnUiThread(() -> {
                 List<String> imageDownloadLinks = new ArrayList<>();
-                try
-                {
-                    // parse html page for .jpg links and add to imageDownloadLinks list
+                try {
                     URL url = new URL(urlInput);
-                    HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+                    URLConnection urlConnection = url.openConnection();
+                    urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36)");
                     InputStream inputStream = urlConnection.getInputStream();
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(inputStream));
                     String line = null;
+                    StringBuffer sb = new StringBuffer();
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line, 0, line.length());
+                        sb.append('\n');
+                    }
+                    reader.close();
+                    inputStream.close();
+                    Matcher matcher = Pattern.compile(IMGURL_REG).matcher(sb.toString());
+                    List<String> listimgurl = new ArrayList<>();
+                    while (matcher.find()) {
+                        listimgurl.add(matcher.group());
+                    }
                     int counter = 0;
-                    while ((line = reader.readLine()) != null)
-                    {
-                        if (line.contains(".jpg"))
-                        {
-                            imageDownloadLinks.add(line.substring(line.lastIndexOf("https"),
-                                    line.lastIndexOf("jpg") + "jpg".length()));
-                            Bitmap image = BitmapFactory.decodeStream((InputStream)new URL
-                                    (imageDownloadLinks.get(counter)).getContent());
+                    for (String imgurl : listimgurl) {
+                        Matcher matc = Pattern.compile(IMGSRC_REG).matcher(imgurl);
+                        while (matc.find()) {
+                            imageDownloadLinks.add(matc.group().substring(0, matc.group().length() - 1));
+                            Bitmap image = BitmapFactory.decodeStream((InputStream) new URL(imageDownloadLinks.get(counter)).getContent());
                             if (image != null)
                                 imageViewList.get(counter).setImageBitmap(image);
-                            counter = counter + 1;
+                            counter += 1;
                         }
-                        if (imageDownloadLinks.size() == NUMBER_OF_IMAGES)
-                            break;
+                        if (imageDownloadLinks.size() == NUMBER_OF_IMAGES) break;
                     }
-                }
-                catch (IllegalStateException e)
-                {
+                } catch (IllegalStateException e) {
                     e.printStackTrace();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
@@ -142,8 +143,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(Void v)
-        {
+        protected void onPostExecute(Void v) {
             Toast.makeText(MainActivity.this, "Task done",
                     Toast.LENGTH_SHORT).show();
         }
