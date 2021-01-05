@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private String urlInput;
     private ProgressBar progressBar;
     private TextView progressText;
+    private ExtractImageLinksFromHTML currentTask;
 
     private static final String IMGURL_REG = "<img.*src=\"(.*?)\"";
     private static final String IMGSRC_REG = "[a-zA-z]+://[^\\s]*";
@@ -67,9 +68,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
+        //if no change in url, return
+        if (!urlInput.isEmpty() && urlInput.equals(urlInputField.getText().toString()))
+            return;
+        //else set new url to urlInput
         urlInput = urlInputField.getText().toString();
+
         if (!urlInput.isEmpty()) {
-            new ExtractImageLinksFromHTML(urlInput).execute();
+            if (currentTask!=null) {
+                //cancel current task if running
+                currentTask.cancel(true);
+            }
+            //start new task
+            currentTask = new ExtractImageLinksFromHTML(urlInput);
+            currentTask.execute();
         } else
             Toast.makeText(this, "Please enter url", Toast.LENGTH_SHORT).show();
     }
@@ -107,7 +119,13 @@ public class MainActivity extends AppCompatActivity {
                 int counter = 0;
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setProgress(0);
+                    progressBar.setMax(Math.min(20, listimgurl.size()));
                     progressText.setText("Downloading 1 of 20 images");
+                    //reset all images to placeholder
+                    for (ImageView image : imageViewList) {
+                        image.setImageResource(R.drawable.image_placeholder);
+                    }
                 });
                 for (String imgurl : listimgurl) {
                     Matcher matc = Pattern.compile(IMGSRC_REG).matcher(imgurl);
@@ -119,19 +137,16 @@ public class MainActivity extends AppCompatActivity {
                             final int threadCounter1 = counter;
                             runOnUiThread(() -> {
                                 imageViewList.get(threadCounter1).setImageBitmap(image);
-                            });
-                            counter += 1;
-                            final int threadCounter2 = counter;
-                            runOnUiThread(() -> {
-                                progressBar.incrementProgressBy(5);
-                                progressText.setText("Downloading "+ threadCounter2 +
+                                progressBar.incrementProgressBy(1);
+                                progressText.setText("Downloading "+ (threadCounter1+1) +
                                         " of 20 images");
                             });
+                            counter += 1;
                         }
                     }
                     if (imageDownloadLinks.size() == imageViewList.size()) break;
                 }
-                }
+            }
             catch (IllegalStateException e) {
                 e.printStackTrace();
             }
