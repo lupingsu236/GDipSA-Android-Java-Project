@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress(0);
-                    progressBar.setMax(Math.min(20, listimgurl.size()));
                     progressText.setText("Downloading 1 of 20 images");
                     //reset all images to placeholder
                     for (ImageView image : imageViewList) {
@@ -137,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                             final int threadCounter1 = counter;
                             runOnUiThread(() -> {
                                 imageViewList.get(threadCounter1).setImageBitmap(image);
-                                progressBar.incrementProgressBy(1);
+                                progressBar.incrementProgressBy(5);
                                 progressText.setText("Downloading "+ (threadCounter1+1) +
                                         " of 20 images");
                             });
@@ -159,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void v) {
+            //set progress to 100 to cater for url with less than 20 images
+            progressBar.setProgress(100);
             progressText.setText("Download completed!");
         }
     }
