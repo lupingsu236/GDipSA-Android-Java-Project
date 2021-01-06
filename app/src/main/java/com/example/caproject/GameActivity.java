@@ -194,8 +194,9 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         timerHandler.removeCallbacks(timerRunnable);
         timeElapsed = timeElapsed + (System.currentTimeMillis() - startTime);
         DialogFragment dialog = new PauseDialogFragment();
-        dialog.setCancelable(false);
+       // dialog.setCancelable(false);
         dialog.show(getSupportFragmentManager(), "PauseDialogFragment");
+
     }
 
     @Override

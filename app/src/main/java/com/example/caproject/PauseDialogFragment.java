@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.Objects;
 
@@ -22,12 +24,21 @@ public class PauseDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
-        builder.setMessage("Game Paused!")
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+
+        builder.setView(inflater.inflate(R.layout.dialog_pause, null))
                 .setPositiveButton("Resume", (dialog, id) ->
                         listener.onDialoguePositiveClick(PauseDialogFragment.this));
-
         // Create the AlertDialog object and return it
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+        Button positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveBtn.setTextSize(20);
+        LinearLayout.LayoutParams positiveButtonLL = (LinearLayout.LayoutParams) positiveBtn.getLayoutParams();
+        positiveButtonLL.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        positiveBtn.setLayoutParams(positiveButtonLL);
+        return dialog;
     }
 
     public interface IPauseDialogListener {
