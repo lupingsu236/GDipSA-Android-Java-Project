@@ -1,18 +1,22 @@
 package com.example.caproject;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements PauseDialogFragment.IPauseDialogListener {
     int[] imageId = {
             R.drawable.afraid,
             R.drawable.full,
@@ -87,16 +91,25 @@ public class GameActivity extends AppCompatActivity {
             }
         };
 
+        //show dialog upon pause button being clicked
+        ImageButton pauseBtn = findViewById(R.id.pauseBtn);
+        pauseBtn.setOnClickListener(v -> {
+            DialogFragment dialog = new PauseDialogFragment();
+            dialog.setCancelable(false);
+            dialog.show(getSupportFragmentManager(), "PauseDialogFragment");
+        });
+
+
         ImageAdapter adapter = new ImageAdapter(GameActivity.this, placeholderImg);
         GridView grid=(GridView)findViewById(R.id.gameGrid);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //start game and timer
                 if (gameStart == false) {
                     gameStart = true;
+                    pauseBtn.setVisibility(View.VISIBLE);
                     startTime = System.currentTimeMillis();
                     timerHandler.postDelayed(timerRunnable, 0);
                 }
@@ -126,6 +139,8 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     public int[] shuffle(int[] position) {
@@ -170,5 +185,10 @@ public class GameActivity extends AppCompatActivity {
     public boolean checkMatch(int prev_position, int position) {
         if(shuffledImages[prev_position] == shuffledImages[position]) {return true;}
         else return false;
+    }
+
+    @Override
+    public void onDialoguePositiveClick(DialogFragment dialog) {
+        //resume game
     }
 }
