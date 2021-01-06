@@ -15,14 +15,15 @@ import java.util.Map;
 public class StartActivity extends AppCompatActivity implements View.OnClickListener
 {
     Map<String, Boolean> difficultyBtnClickState = new HashMap<>();
-    String difficultyChosen = null;
+    // difficulty chosen is normal at launch
+    String difficultyChosen = "normal";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         // all buttons are not clicked when the app is first launched
         difficultyBtnClickState.put("easy", false);
-        difficultyBtnClickState.put("normal", false);
+        difficultyBtnClickState.put("normal", true);
         difficultyBtnClickState.put("hard", false);
 
         super.onCreate(savedInstanceState);
