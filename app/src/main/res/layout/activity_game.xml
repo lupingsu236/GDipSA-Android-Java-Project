@@ -9,26 +9,27 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/matchCountTextView"
-            android:layout_width="180dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="Matches: 0/10"
             android:textAlignment="center"
-            android:textSize="30dp" />
+            android:textSize="26dp" />
 
         <TextView
             android:id="@+id/timerTextView"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="50dp"
-            android:text="Timer"
+            android:text="0:00"
             android:textAlignment="center"
-            android:textSize="30dp" />
+            android:textSize="26dp" />
 
         <ImageButton
             android:id="@+id/pauseBtn"
@@ -42,6 +43,7 @@
     </RelativeLayout>
 
     <GridView
+        android:layout_marginTop="10dp"
         android:id="@+id/gameGrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,6 +1,8 @@
 package com.example.caproject;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -64,7 +66,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             //Doubled cause the images are in pairs
             for(int j = 0; j < numberOfPictures; j++) {
                 //Set all pictures to the default placeholder
-                placeholderImg[i*numberOfPictures + j] = R.drawable.qnmark;
+                placeholderImg[i*numberOfPictures + j] = R.drawable.catqnmark2;
                 //Create an index-array of all images
                 position[i*numberOfPictures + j] = i*numberOfPictures + j;
                 //Initialize all flipped states to false
@@ -78,9 +80,12 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             shuffledImages[position[i]] = imageId[i];
         }
 
+        //Music load
+        MediaPlayer correctSound = MediaPlayer.create(this,R.raw.trimmedcorrect);
+
         TextView matchCountTextView = findViewById(R.id.matchCountTextView);
         TextView timerTextView = findViewById(R.id.timerTextView);
-        //runs without a timer by reposting this handler at the end of the runnable
+
         timerHandler = new Handler();
         timerRunnable = new Runnable() {
             @Override
@@ -97,10 +102,11 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             }
         };
 
+        //Pause game manually
         pauseBtn = findViewById(R.id.pauseBtn);
         pauseBtn.setOnClickListener(v -> pauseGame());
 
-
+        //Set images to grid
         ImageAdapter adapter = new ImageAdapter(GameActivity.this, placeholderImg);
         GridView grid=(GridView)findViewById(R.id.gameGrid);
         grid.setAdapter(adapter);
@@ -112,13 +118,13 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
                     gameStart = true;
                     pauseBtn.setVisibility(View.VISIBLE);
                     startTime = System.currentTimeMillis();
-                    timerHandler.postDelayed(timerRunnable, 0);
+                    timerHandler.post(timerRunnable);
                 }
                 //only allow flipping if unflipped
                 if (flippedState[position] == false) {
                     if (flipCount == 0) {
                         flip(view, position);
-                        flipCount += 1;
+                        flipCount = 1;
                         prev_position = position;
                     }
                     else if (flipCount == 1) {
@@ -126,18 +132,20 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
                         boolean match = checkMatch(prev_position, position);
                         if (match) {
                             matches += 1;
+                            correctSound.start();
                             flipCount = 0;
                             matchCountTextView.setText(String.format("Matches: %d/10", matches));
                         }
                         else {
-                            flipback(parent, prev_position, position);
                             flipCount = 0;
+                            flipback(parent, prev_position, position);
                         }
                     }
                 }
                 if (matches == numberOfPictures) {
                     gameStart = false;
                     timerHandler.removeCallbacks(timerRunnable);
+                    goToEndPage();
                 }
             }
         });
@@ -163,12 +171,15 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         flippedState[position] = true;
     }
 
+    Handler handler = new Handler();
+
     public void flipback(AdapterView<?> parent, int prev_position, int position) {
         ImageView imgview1 = (ImageView) parent.getChildAt(prev_position).findViewById(R.id.grid_image);
         imgview1.postDelayed(new Runnable() {
             @Override
             public void run() {
                 imgview1.setImageResource(placeholderImg[position]);
+                flippedState[prev_position] = false;
             }
         }, 500);
 
@@ -177,11 +188,9 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             @Override
             public void run() {
                 imgview2.setImageResource(placeholderImg[position]);
+                flippedState[position] = false;
             }
         }, 500);
-
-        flippedState[prev_position] = false;
-        flippedState[position] = false;
     }
 
     public boolean checkMatch(int prev_position, int position) {
@@ -210,5 +219,10 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     protected void onPause() {
         super.onPause();
         pauseGame();
+    }
+
+    public void goToEndPage(){
+        Intent intent = new Intent(this, EndGameActivity.class);
+        startActivity(intent);
     }
 }
