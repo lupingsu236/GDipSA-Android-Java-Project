@@ -2,6 +2,7 @@ package com.example.caproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.StrictMode;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,6 +37,9 @@ import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
+    private int gameDifficulty = 6;
+    private boolean fullyloaded = false;
+
     private EditText urlInputField;
     private Button fetchBtn;
     public List<String> imageDownloadLinks = new ArrayList<>();
@@ -81,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
             selected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    hideSoftKeyboard(MainActivity.this);
+                    if (fullyloaded == false) {return;}
                     selectText.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     progressText.setVisibility(View.GONE);
@@ -90,27 +97,29 @@ public class MainActivity extends AppCompatActivity {
                         imgSelecttoSend.remove(imageDownloadLinks.get(number));
                         selectText.setText("Select "+imageSelected.size()+"/6 images");
                     } else {
-                        if (imageSelected.size() < 6) {
+                        if (imageSelected.size() < gameDifficulty) {
                             selected.setColorFilter(new LightingColorFilter(0x00ff00, 0x000000));
                             imageSelected.add(selected);
                             imgSelecttoSend.add(imageDownloadLinks.get(number));
                             selectText.setText("Select "+imageSelected.size()+"/6 images");
                         }
+                        // Send url list to gameactivity
+                        if(imageSelected.size() == gameDifficulty){
+                            Intent intent=new Intent(getApplicationContext(), GameActivity.class);
+                            Bundle bundle=new Bundle();
+                            bundle.putInt("gameDifficulty", gameDifficulty);
+                            bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
                     }
                 }
             });
         }
-//        Send url list to gameactivity
-//        if(imageSelected.size()==6){
-//            Intent intent=new Intent(getApplicationContext(),GameActivity.class);
-//            Bundle bundle=new Bundle();
-//            bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
-//            intent.putExtras(bundle);
-//            this.startActivity(intent);
-//        }
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
+        hideSoftKeyboard(MainActivity.this);
         //if no change in url, return
         if (!urlInput.isEmpty() && urlInput.equals(urlInputField.getText().toString()))
             return;
@@ -194,7 +203,10 @@ public class MainActivity extends AppCompatActivity {
                             counter += 1;
                         }
                     }
-                    if (imageDownloadLinks.size() == imageViewList.size()) break;
+                    if (imageDownloadLinks.size() == imageViewList.size()) {
+                        fullyloaded = true;
+                        break;
+                    }
                 }
             } catch (IllegalStateException e) {
                 e.printStackTrace();
@@ -211,5 +223,13 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setProgress(100);
             progressText.setText("Download completed!");
         }
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

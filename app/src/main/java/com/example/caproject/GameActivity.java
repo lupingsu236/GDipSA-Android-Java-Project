@@ -2,6 +2,8 @@ package com.example.caproject;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,39 +18,29 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements PauseDialogFragment.IPauseDialogListener {
-    int[] imageId = {
-            R.drawable.afraid,
-            R.drawable.full,
-            R.drawable.hug,
-            R.drawable.laugh,
-            R.drawable.no_way,
-            R.drawable.peep,
-            R.drawable.snore,
-            R.drawable.stop,
-            R.drawable.tired,
-            R.drawable.what,
-            R.drawable.afraid,
-            R.drawable.full,
-            R.drawable.hug,
-            R.drawable.laugh,
-            R.drawable.no_way,
-            R.drawable.peep,
-            R.drawable.snore,
-            R.drawable.stop,
-            R.drawable.tired,
-            R.drawable.what
-    };
+//    int[] imageId = {
+//            R.drawable.afraid, R.drawable.full, R.drawable.hug, R.drawable.laugh, R.drawable.no_way, R.drawable.peep, R.drawable.snore, R.drawable.stop, R.drawable.tired, R.drawable.what,
+//            R.drawable.afraid, R.drawable.full, R.drawable.hug, R.drawable.laugh, R.drawable.no_way, R.drawable.peep, R.drawable.snore, R.drawable.stop, R.drawable.tired, R.drawable.what
+//    }
+
+    int numberOfPictures;
+    ArrayList<String> chosenImages;
+    Bitmap[] imageId;
+
     int flipCount = 0;
     int matches = 0;
     int prev_position = 0;
-    int numberOfPictures = 10;
-    int[] placeholderImg = new int[numberOfPictures*2];
-    int[] position = new int[numberOfPictures*2];
-    int[] shuffledImages = new int[numberOfPictures*2];
-    boolean[] flippedState = new boolean[numberOfPictures*2];
+    int[] placeholderImg;
+    int[] shuffledPosition;
+    boolean[] flippedState;
     boolean gameStart = false;
     long startTime = 0;
     long timeElapsed = 0;
@@ -56,36 +48,44 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     Handler timerHandler;
     Runnable timerRunnable;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        for(int i = 0; i < 2; i++) {
-            //Doubled cause the images are in pairs
-            for(int j = 0; j < numberOfPictures; j++) {
-                //Set all pictures to the default placeholder
-                placeholderImg[i*numberOfPictures + j] = R.drawable.catqnmark2;
-                //Create an index-array of all images
-                position[i*numberOfPictures + j] = i*numberOfPictures + j;
-                //Initialize all flipped states to false
-                flippedState[i*numberOfPictures + j] = false;
+        //Get information bundle from previous activity
+        Bundle bundle = getIntent().getExtras();
+        //Number of unique pictures
+        numberOfPictures = bundle.getInt("gameDifficulty");
+        //ArrayList<String> of image urls
+        chosenImages = bundle.getStringArrayList("urlSelectedtoSend");
+        //Initialize the array to hold the images
+        imageId = new Bitmap[numberOfPictures*2];
+        //Insert images into the array
+        int index_counter = 0;
+        for(String imgurl : chosenImages) {
+            URL url = null;
+            try {
+                url= new URL(imgurl);
+                Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                imageId[index_counter] = image;
+                index_counter += 1;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        //shuffle the index-array for random image placement
-        position = shuffle(position);
-        //shuffle images using the shuffled index-array
-        for(int i = 0; i < imageId.length; i++) {
-            shuffledImages[position[i]] = imageId[i];
-        }
 
+        //Initialize all the other arrays
+        initializeArrays();
+        //shuffle the index-array for random image placement
+        shuffledPosition = shuffle(shuffledPosition);
         //Music load
         MediaPlayer correctSound = MediaPlayer.create(this,R.raw.trimmedcorrect);
-
+        //Set match view
         TextView matchCountTextView = findViewById(R.id.matchCountTextView);
+        matchCountTextView.setText(String.format("Matches: %d/%d", 0, numberOfPictures));
+        //Set timer
         TextView timerTextView = findViewById(R.id.timerTextView);
-
         timerHandler = new Handler();
         timerRunnable = new Runnable() {
             @Override
@@ -125,6 +125,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
                     if (flipCount == 0) {
                         flip(view, position);
                         flipCount = 1;
+                        //save previous position for flipback
                         prev_position = position;
                     }
                     else if (flipCount == 1) {
@@ -134,7 +135,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
                             matches += 1;
                             correctSound.start();
                             flipCount = 0;
-                            matchCountTextView.setText(String.format("Matches: %d/10", matches));
+                            matchCountTextView.setText(String.format("Matches: %d/%d", matches, numberOfPictures));
                         }
                         else {
                             flipCount = 0;
@@ -164,10 +165,31 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         }
         return shuffled;
     }
+    public void initializeArrays() {
+        //Array to pass to image adapter to initialize placeholder image
+        placeholderImg = new int[numberOfPictures*2];
+        //Array of paired-indexes to be shuffled
+        shuffledPosition = new int[numberOfPictures*2];
+        //Array to hold flip-state of the grid positions
+        flippedState = new boolean[numberOfPictures*2];
+        for(int i = 0; i < 2; i++) {
+            //Doubled cause the images are in pairs
+            for(int j = 0; j < numberOfPictures; j++) {
+                //Set all pictures to the default placeholder
+                placeholderImg[i*numberOfPictures + j] = R.drawable.catqnmark2;
+                //Create an index-array of all images
+                shuffledPosition[i*numberOfPictures + j] = j;
+                //Initialize all flipped states to false
+                flippedState[i*numberOfPictures + j] = false;
+            }
+        }
+    }
 
     public void flip(View view, int position) {
         ImageView imgview = (ImageView) view.findViewById(R.id.grid_image);
-        imgview.setImageResource(shuffledImages[position]);
+        //instead of shuffling the bitmaps, we shuffle an array containing indexes
+        //simply call the image at the shuffled index
+        imgview.setImageBitmap(imageId[shuffledPosition[position]]);
         flippedState[position] = true;
     }
 
@@ -194,7 +216,8 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     }
 
     public boolean checkMatch(int prev_position, int position) {
-        if(shuffledImages[prev_position] == shuffledImages[position]) {return true;}
+        //shuffled indexes are paired
+        if(shuffledPosition[prev_position] == shuffledPosition[position]) {return true;}
         else return false;
     }
 

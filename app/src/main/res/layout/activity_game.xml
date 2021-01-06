@@ -17,7 +17,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:text="Matches: 0/10"
+            android:text="Matches"
             android:textAlignment="center"
             android:textSize="26dp" />
 
