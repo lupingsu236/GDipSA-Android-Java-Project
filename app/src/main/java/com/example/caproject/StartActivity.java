@@ -9,13 +9,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class StartActivity extends AppCompatActivity implements View.OnClickListener
 {
     Map<String, Boolean> difficultyBtnClickState = new HashMap<>();
-    // difficulty chosen is normal at launch
     String difficultyChosen = "normal";
 
     @Override
@@ -115,9 +113,19 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
             else
             {
                 Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("difficulty", difficultyChosen);
+                int gameDifficulty = ConvertDifficultyToNumber(difficultyChosen);
+                intent.putExtra("difficulty", gameDifficulty);
                 startActivity(intent);
             }
         }
+    }
+
+    public int ConvertDifficultyToNumber(String difficultyChosen) {
+        switch(difficultyChosen) {
+            case "easy": return 6;
+            case "normal": return 8;
+            case "hard": return 10;
+        }
+        return 0;
     }
 }

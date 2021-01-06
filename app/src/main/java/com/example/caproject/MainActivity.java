@@ -37,9 +37,8 @@ import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
-    private int gameDifficulty = 6;
+    private int gameDifficulty;
     private boolean fullyloaded = false;
-
     private EditText urlInputField;
     private Button fetchBtn;
     public List<String> imageDownloadLinks = new ArrayList<>();
@@ -59,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Get game difficulty from previous activity
+        gameDifficulty = getIntent().getIntExtra("difficulty", 0);
 
         // to enable network calls on the main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -86,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
             selected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hideSoftKeyboard(MainActivity.this);
                     if (fullyloaded == false) {return;}
+                    hideSoftKeyboard(MainActivity.this);
                     selectText.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     progressText.setVisibility(View.GONE);
