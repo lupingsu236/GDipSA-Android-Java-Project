@@ -47,8 +47,14 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     int[] position = new int[numberOfPictures*2];
     int[] shuffledImages = new int[numberOfPictures*2];
     boolean[] flippedState = new boolean[numberOfPictures*2];
-    boolean gameStart = false;
+    Enum<GameStatus> status = GameStatus.STOPPED;
     long startTime = 0;
+    long timeElapsed = 0;
+    ImageButton pauseBtn;
+    Handler timerHandler;
+    Runnable timerRunnable;
+
+    public enum GameStatus {STARTED, PAUSED, STOPPED}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +82,13 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         TextView matchCountTextView = findViewById(R.id.matchCountTextView);
         TextView timerTextView = findViewById(R.id.timerTextView);
         //runs without a timer by reposting this handler at the end of the runnable
-        Handler timerHandler = new Handler();
-        Runnable timerRunnable = new Runnable() {
-
+        timerHandler = new Handler();
+        timerRunnable = new Runnable() {
             @Override
             public void run() {
-                long millis = System.currentTimeMillis() - startTime;
+                //timeElapsed stores previous time recorded prior to pause being clicked
+                //timeElapsed = 0 if pause has never been triggered
+                long millis = (System.currentTimeMillis() - startTime) + timeElapsed;
                 int seconds = (int) (millis / 1000);
                 int minutes = seconds / 60;
                 seconds = seconds % 60;
@@ -91,9 +98,12 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             }
         };
 
-        //show dialog upon pause button being clicked
-        ImageButton pauseBtn = findViewById(R.id.pauseBtn);
+        //show dialog and save time elapsed upon pause button being clicked
+        pauseBtn = findViewById(R.id.pauseBtn);
         pauseBtn.setOnClickListener(v -> {
+            status = GameStatus.PAUSED;
+            timerHandler.removeCallbacks(timerRunnable);
+            timeElapsed = timeElapsed + (System.currentTimeMillis() - startTime);
             DialogFragment dialog = new PauseDialogFragment();
             dialog.setCancelable(false);
             dialog.show(getSupportFragmentManager(), "PauseDialogFragment");
@@ -107,8 +117,8 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //start game and timer
-                if (gameStart == false) {
-                    gameStart = true;
+                if (status == GameStatus.STOPPED) {
+                    status = GameStatus.STARTED;
                     pauseBtn.setVisibility(View.VISIBLE);
                     startTime = System.currentTimeMillis();
                     timerHandler.postDelayed(timerRunnable, 0);
@@ -135,6 +145,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
                     }
                 }
                 if (matches == numberOfPictures) {
+                    status = GameStatus.STOPPED;
                     timerHandler.removeCallbacks(timerRunnable);
                 }
             }
@@ -189,6 +200,9 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
 
     @Override
     public void onDialoguePositiveClick(DialogFragment dialog) {
-        //resume game
+        status = GameStatus.STARTED;
+        //restart timer
+        startTime = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
     }
 }
