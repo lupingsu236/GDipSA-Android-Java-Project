@@ -2,10 +2,14 @@ package com.example.caproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -32,8 +37,12 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity {
     private EditText urlInputField;
     private Button fetchBtn;
+    public List<String> imageDownloadLinks = new ArrayList<>();
     private List<ImageView> imageViewList = new ArrayList<>();
+    private List<ImageView> imageSelected = new ArrayList<>();
+    private ArrayList<String> imgSelecttoSend=new ArrayList<>();
     private String urlInput;
+    private TextView selectText;
     private ProgressBar progressBar;
     private TextView progressText;
     private ExtractImageLinksFromHTML currentTask;
@@ -50,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        for (int i=1; i<=20; i++) {
+        for (int i = 1; i <= 20; i++) {
             String imageID = "image" + i;
             int resID = getResources().getIdentifier(imageID, "id", getPackageName());
             imageViewList.add(findViewById(resID));
@@ -65,6 +74,40 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         progressText = findViewById(R.id.progressText);
 
+        selectText=findViewById(R.id.selectText);
+        for (int i = 0; i < 20; i++) {
+            ImageView selected = imageViewList.get(i);
+            int number=i;
+            selected.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectText.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    progressText.setVisibility(View.GONE);
+                    if (selected.getColorFilter() != null) {
+                        selected.setColorFilter(null);
+                        imageSelected.remove(selected);
+                        imgSelecttoSend.remove(imageDownloadLinks.get(number));
+                        selectText.setText("Select "+imageSelected.size()+"/6 images");
+                    } else {
+                        if (imageSelected.size() < 6) {
+                            selected.setColorFilter(new LightingColorFilter(0x00ff00, 0x000000));
+                            imageSelected.add(selected);
+                            imgSelecttoSend.add(imageDownloadLinks.get(number));
+                            selectText.setText("Select "+imageSelected.size()+"/6 images");
+                        }
+                    }
+                }
+            });
+        }
+//        Send url list to gameactivity
+//        if(imageSelected.size()==6){
+//            Intent intent=new Intent(getApplicationContext(),GameActivity.class);
+//            Bundle bundle=new Bundle();
+//            bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
+//            intent.putExtras(bundle);
+//            this.startActivity(intent);
+//        }
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
@@ -75,13 +118,21 @@ public class MainActivity extends AppCompatActivity {
         urlInput = urlInputField.getText().toString();
 
         if (!urlInput.isEmpty()) {
-            if (currentTask!=null) {
+            if (currentTask != null) {
                 //cancel current task if running
                 currentTask.cancel(true);
             }
             //start new task
             currentTask = new ExtractImageLinksFromHTML(urlInput);
             currentTask.execute();
+            selectText.setVisibility(View.GONE);
+            imageSelected.clear();
+            imgSelecttoSend.clear();
+            selectText.setText("Select "+imageSelected.size()+"/6 images");
+            for(int i=0;i<20;i++){
+                ImageView selected = imageViewList.get(i);
+                selected.setColorFilter(null);
+            }
         } else
             Toast.makeText(this, "Please enter url", Toast.LENGTH_SHORT).show();
     }
@@ -92,10 +143,10 @@ public class MainActivity extends AppCompatActivity {
         public ExtractImageLinksFromHTML(String urlInput) {
             this.urlInput = urlInput;
         }
-
+//        public List<String> imageDownloadLinks = new ArrayList<>();
         @Override
         protected Void doInBackground(Void... params) {
-            List<String> imageDownloadLinks = new ArrayList<>();
+
             try {
                 URL url = new URL(urlInput);
                 URLConnection urlConnection = url.openConnection();
@@ -120,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress(0);
+                    progressText.setVisibility(View.VISIBLE);
                     progressText.setText("Downloading 1 of 20 images");
                     //reset all images to placeholder
                     for (ImageView image : imageViewList) {
@@ -131,13 +183,12 @@ public class MainActivity extends AppCompatActivity {
                     while (matc.find()) {
                         imageDownloadLinks.add(matc.group().substring(0, matc.group().length() - 1));
                         Bitmap image = BitmapFactory.decodeStream((InputStream) new URL(imageDownloadLinks.get(counter)).getContent());
-                        if (image != null)
-                        {
+                        if (image != null) {
                             final int threadCounter1 = counter;
                             runOnUiThread(() -> {
                                 imageViewList.get(threadCounter1).setImageBitmap(image);
                                 progressBar.incrementProgressBy(5);
-                                progressText.setText("Downloading "+ (threadCounter1+1) +
+                                progressText.setText("Downloading " + (threadCounter1 + 1) +
                                         " of 20 images");
                             });
                             counter += 1;
@@ -145,11 +196,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (imageDownloadLinks.size() == imageViewList.size()) break;
                 }
-            }
-            catch (IllegalStateException e) {
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             Void v = null;
