@@ -2,12 +2,18 @@ package com.example.caproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -30,10 +37,16 @@ import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
+    private int gameDifficulty;
+    private boolean fullyloaded;
     private EditText urlInputField;
     private Button fetchBtn;
+    public List<String> imageDownloadLinks = new ArrayList<>();
     private List<ImageView> imageViewList = new ArrayList<>();
+    private List<ImageView> imageSelected = new ArrayList<>();
+    private ArrayList<String> imgSelecttoSend=new ArrayList<>();
     private String urlInput;
+    private TextView selectText;
     private ProgressBar progressBar;
     private TextView progressText;
     private ExtractImageLinksFromHTML currentTask;
@@ -46,11 +59,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fullyloaded = false;
+
+        //Get game difficulty from previous activity
+        gameDifficulty = getIntent().getIntExtra("difficulty", 0);
+
         // to enable network calls on the main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        for (int i=1; i<=20; i++) {
+        for (int i = 1; i <= 20; i++) {
             String imageID = "image" + i;
             int resID = getResources().getIdentifier(imageID, "id", getPackageName());
             imageViewList.add(findViewById(resID));
@@ -65,9 +83,48 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         progressText = findViewById(R.id.progressText);
 
+        selectText=findViewById(R.id.selectText);
+        for (int i = 0; i < 20; i++) {
+            ImageView selected = imageViewList.get(i);
+            int number=i;
+            selected.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (fullyloaded == false) {return;}
+                    hideSoftKeyboard(MainActivity.this);
+                    selectText.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    progressText.setVisibility(View.GONE);
+                    if (selected.getColorFilter() != null) {
+                        selected.setColorFilter(null);
+                        imageSelected.remove(selected);
+                        imgSelecttoSend.remove(imageDownloadLinks.get(number));
+                        selectText.setText("Select "+imageSelected.size()+"/6 images");
+                    } else {
+                        if (imageSelected.size() < gameDifficulty) {
+                            selected.setColorFilter(new LightingColorFilter(0x00ff00, 0x000000));
+                            imageSelected.add(selected);
+                            imgSelecttoSend.add(imageDownloadLinks.get(number));
+                            selectText.setText("Select "+imageSelected.size()+"/6 images");
+                        }
+                        // Send url list to gameactivity
+                        if(imageSelected.size() == gameDifficulty){
+                            //Make start button clickable only if all images are selected
+                            Intent intent=new Intent(getApplicationContext(), GameActivity.class);
+                            Bundle bundle=new Bundle();
+                            bundle.putInt("gameDifficulty", gameDifficulty);
+                            bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
+        hideSoftKeyboard(MainActivity.this);
         //if no change in url, return
         if (!urlInput.isEmpty() && urlInput.equals(urlInputField.getText().toString()))
             return;
@@ -75,13 +132,21 @@ public class MainActivity extends AppCompatActivity {
         urlInput = urlInputField.getText().toString();
 
         if (!urlInput.isEmpty()) {
-            if (currentTask!=null) {
+            if (currentTask != null) {
                 //cancel current task if running
                 currentTask.cancel(true);
             }
             //start new task
             currentTask = new ExtractImageLinksFromHTML(urlInput);
             currentTask.execute();
+            selectText.setVisibility(View.GONE);
+            imageSelected.clear();
+            imgSelecttoSend.clear();
+            selectText.setText("Select "+imageSelected.size()+"/6 images");
+            for(int i=0;i<20;i++){
+                ImageView selected = imageViewList.get(i);
+                selected.setColorFilter(null);
+            }
         } else
             Toast.makeText(this, "Please enter url", Toast.LENGTH_SHORT).show();
     }
@@ -92,10 +157,10 @@ public class MainActivity extends AppCompatActivity {
         public ExtractImageLinksFromHTML(String urlInput) {
             this.urlInput = urlInput;
         }
-
+//        public List<String> imageDownloadLinks = new ArrayList<>();
         @Override
         protected Void doInBackground(Void... params) {
-            List<String> imageDownloadLinks = new ArrayList<>();
+
             try {
                 URL url = new URL(urlInput);
                 URLConnection urlConnection = url.openConnection();
@@ -120,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress(0);
+                    progressText.setVisibility(View.VISIBLE);
                     progressText.setText("Downloading 1 of 20 images");
                     //reset all images to placeholder
                     for (ImageView image : imageViewList) {
@@ -131,25 +197,25 @@ public class MainActivity extends AppCompatActivity {
                     while (matc.find()) {
                         imageDownloadLinks.add(matc.group().substring(0, matc.group().length() - 1));
                         Bitmap image = BitmapFactory.decodeStream((InputStream) new URL(imageDownloadLinks.get(counter)).getContent());
-                        if (image != null)
-                        {
+                        if (image != null) {
                             final int threadCounter1 = counter;
                             runOnUiThread(() -> {
                                 imageViewList.get(threadCounter1).setImageBitmap(image);
                                 progressBar.incrementProgressBy(5);
-                                progressText.setText("Downloading "+ (threadCounter1+1) +
+                                progressText.setText("Downloading " + (threadCounter1 + 1) +
                                         " of 20 images");
                             });
                             counter += 1;
                         }
                     }
-                    if (imageDownloadLinks.size() == imageViewList.size()) break;
+                    if (imageDownloadLinks.size() == imageViewList.size()) {
+                        fullyloaded = true;
+                        break;
+                    }
                 }
-            }
-            catch (IllegalStateException e) {
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             Void v = null;
@@ -162,5 +228,13 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setProgress(100);
             progressText.setText("Download completed!");
         }
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

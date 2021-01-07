@@ -3,7 +3,6 @@
     package="com.example.caproject">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.hardware.screen.portrait"/>
-
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -12,12 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CAproject">
+        <activity android:name=".EndGameActivity"></activity>
+        <activity android:name=".GameActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity android:name=".StartActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
