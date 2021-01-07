@@ -38,7 +38,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
     private int gameDifficulty;
-    private boolean fullyloaded;
+    private boolean inactive = true;
     private EditText urlInputField;
     private Button fetchBtn;
     public List<String> imageDownloadLinks = new ArrayList<>();
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             selected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if (inactive == true) {return;}
                     hideSoftKeyboard(MainActivity.this);
                     selectText.setVisibility(View.VISIBLE);
                     startGameBtn.setVisibility(View.VISIBLE);
@@ -131,13 +131,14 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(getApplicationContext(),"The selected images are not enough!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"The selected images are not enough!",Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
+        inactive = false;
         hideSoftKeyboard(MainActivity.this);
         //if no change in url, return
         if (!urlInput.isEmpty() && urlInput.equals(urlInputField.getText().toString()))
@@ -235,7 +236,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     if (imageDownloadLinks.size() == imageViewList.size()) {
-//                        fullyloaded = true;
                         break;
                     }
                 }
