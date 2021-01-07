@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress(0);
                     progressText.setVisibility(View.VISIBLE);
-                    progressText.setText("Downloading 1 of 20 images");
+                    progressText.setText("Fetching images");
                     //reset all images to placeholder
                     for (ImageView image : imageViewList) {
                         image.setImageResource(R.drawable.image_placeholder);

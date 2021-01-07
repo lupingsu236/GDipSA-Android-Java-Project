@@ -247,6 +247,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         pauseGame();
     }
 
+    //override back button so that game is paused instead of going to previous activity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
