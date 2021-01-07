@@ -13,5 +13,5 @@
         android:layout_marginTop="12dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitXY"
-        android:src="@drawable/afraid" />
+        android:src="@drawable/catqnmark2" />
 </LinearLayout>
