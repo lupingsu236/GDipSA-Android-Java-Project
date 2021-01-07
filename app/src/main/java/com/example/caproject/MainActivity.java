@@ -38,7 +38,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
     private int gameDifficulty;
-    private boolean fullyloaded = false;
+    private boolean fullyloaded;
     private EditText urlInputField;
     private Button fetchBtn;
     public List<String> imageDownloadLinks = new ArrayList<>();
@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fullyloaded = false;
 
         //Get game difficulty from previous activity
         gameDifficulty = getIntent().getIntExtra("difficulty", 0);
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         // Send url list to gameactivity
                         if(imageSelected.size() == gameDifficulty){
+                            //Make start button clickable only if all images are selected
                             Intent intent=new Intent(getApplicationContext(), GameActivity.class);
                             Bundle bundle=new Bundle();
                             bundle.putInt("gameDifficulty", gameDifficulty);

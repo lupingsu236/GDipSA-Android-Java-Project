@@ -24,6 +24,17 @@
         android:text="Congratulations!!"
         android:textAlignment="center"
         android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/timerMessageView"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/timerMessageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="You only took 1min 30seconds!"
+        android:textAlignment="center"
+        android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/popperAnimation"
         tools:layout_editor_absoluteX="0dp" />
 

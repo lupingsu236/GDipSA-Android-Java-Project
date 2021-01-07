@@ -10,9 +10,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -31,12 +34,18 @@ public class EndGameActivity extends AppCompatActivity {
         MediaPlayer ring= MediaPlayer.create(this,R.raw.applause8);
         ring.start();
 
+        int minutes = getIntent().getIntExtra("minutes", 0);
+        int seconds = getIntent().getIntExtra("seconds", 0);
+
+        TextView timerMessageView = (TextView) findViewById(R.id.timerMessageView);
+        timerMessageView.setText(String.format("You only took %dmin %dseconds!", minutes, seconds));
+
         homeBtn = (Button) findViewById(R.id.returnHomeBtn);
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-                Intent intent = new Intent(view.getContext(), MainActivity.class);
+                Intent intent = new Intent(view.getContext(), StartActivity.class);
                 view.getContext().startActivity(intent);
             }
         });
