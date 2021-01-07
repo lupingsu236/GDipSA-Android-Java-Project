@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -26,10 +27,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements PauseDialogFragment.IPauseDialogListener {
-//    int[] imageId = {
-//            R.drawable.afraid, R.drawable.full, R.drawable.hug, R.drawable.laugh, R.drawable.no_way, R.drawable.peep, R.drawable.snore, R.drawable.stop, R.drawable.tired, R.drawable.what,
-//            R.drawable.afraid, R.drawable.full, R.drawable.hug, R.drawable.laugh, R.drawable.no_way, R.drawable.peep, R.drawable.snore, R.drawable.stop, R.drawable.tired, R.drawable.what
-//    }
 
     int numberOfPictures;
     ArrayList<String> chosenImages;
@@ -232,16 +229,31 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     }
 
     @Override
-    public void onDialoguePositiveClick(DialogFragment dialog) {
+    public void onResumeGameClick(DialogFragment dialog) {
         //restart timer
         startTime = System.currentTimeMillis();
         timerHandler.postDelayed(timerRunnable, 0);
     }
 
     @Override
+    public void onEndGameClick(DialogFragment dialog) {
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         pauseGame();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            pauseGame();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public void goToEndPage(){

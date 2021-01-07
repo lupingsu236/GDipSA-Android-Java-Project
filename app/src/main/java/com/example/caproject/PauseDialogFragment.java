@@ -7,9 +7,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,22 +29,35 @@ public class PauseDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         builder.setView(inflater.inflate(R.layout.dialog_pause, null))
-                .setPositiveButton("Resume", (dialog, id) ->
-                        listener.onDialoguePositiveClick(PauseDialogFragment.this));
-        // Create the AlertDialog object and return it
+                .setNegativeButton("Resume", (dialog, id) ->
+                                listener.onResumeGameClick(PauseDialogFragment.this))
+                .setPositiveButton("End Game", (dialog, id) ->
+                        listener.onEndGameClick(PauseDialogFragment.this));
+
+        // Create the AlertDialog object
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
         dialog.show();
-        Button positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        positiveBtn.setTextSize(20);
-        LinearLayout.LayoutParams positiveButtonLL = (LinearLayout.LayoutParams) positiveBtn.getLayoutParams();
-        positiveButtonLL.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        positiveBtn.setLayoutParams(positiveButtonLL);
+
+        //adjust button look and center all elements
+        Button resumeGameBtn = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        resumeGameBtn.setTextSize(20);
+        resumeGameBtn.setPadding(60,0,60,0);
+        Button endGameBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        endGameBtn.setTextSize(20);
+        endGameBtn.setPadding(60,0,60,0);
+        endGameBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+        LinearLayout parent = (LinearLayout) resumeGameBtn.getParent();
+        parent.setGravity(Gravity.CENTER_HORIZONTAL);
+        View leftspacer = parent.getChildAt(1);
+        leftspacer.setVisibility(View.GONE);
+
         return dialog;
     }
 
     public interface IPauseDialogListener {
-        void onDialoguePositiveClick(DialogFragment dialog);
+        void onResumeGameClick(DialogFragment dialog);
+        void onEndGameClick(DialogFragment dialog);
     }
 
     IPauseDialogListener listener;
