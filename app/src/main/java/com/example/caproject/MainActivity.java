@@ -44,9 +44,10 @@ public class MainActivity extends AppCompatActivity {
     public List<String> imageDownloadLinks = new ArrayList<>();
     private List<ImageView> imageViewList = new ArrayList<>();
     private List<ImageView> imageSelected = new ArrayList<>();
-    private ArrayList<String> imgSelecttoSend=new ArrayList<>();
+    private ArrayList<String> imgSelecttoSend = new ArrayList<>();
     private String urlInput;
     private TextView selectText;
+    private Button startGameBtn;
     private ProgressBar progressBar;
     private TextView progressText;
     private ExtractImageLinksFromHTML currentTask;
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fullyloaded = false;
 
         //Get game difficulty from previous activity
         gameDifficulty = getIntent().getIntExtra("difficulty", 0);
@@ -83,44 +83,58 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         progressText = findViewById(R.id.progressText);
 
-        selectText=findViewById(R.id.selectText);
+        selectText = findViewById(R.id.selectText);
+        startGameBtn = findViewById(R.id.startGameBtn);
         for (int i = 0; i < 20; i++) {
             ImageView selected = imageViewList.get(i);
-            int number=i;
+            int number = i;
             selected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (fullyloaded == false) {return;}
+
                     hideSoftKeyboard(MainActivity.this);
                     selectText.setVisibility(View.VISIBLE);
+                    startGameBtn.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     progressText.setVisibility(View.GONE);
-                    if (selected.getColorFilter() != null) {
-                        selected.setColorFilter(null);
-                        imageSelected.remove(selected);
-                        imgSelecttoSend.remove(imageDownloadLinks.get(number));
-                        selectText.setText("Select "+imageSelected.size()+"/6 images");
-                    } else {
-                        if (imageSelected.size() < gameDifficulty) {
-                            selected.setColorFilter(new LightingColorFilter(0x00ff00, 0x000000));
-                            imageSelected.add(selected);
-                            imgSelecttoSend.add(imageDownloadLinks.get(number));
-                            selectText.setText("Select "+imageSelected.size()+"/6 images");
+                    if (number < imageDownloadLinks.size()) {
+                        if (selected.getColorFilter() != null) {
+                            selected.setColorFilter(null);
+                            imageSelected.remove(selected);
+                            imgSelecttoSend.remove(imageDownloadLinks.get(number));
+                            selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+                        } else {
+                            if (imageSelected.size() < gameDifficulty) {
+                                selected.setColorFilter(new LightingColorFilter(0x00ff00, 0x000000));
+                                imageSelected.add(selected);
+                                imgSelecttoSend.add(imageDownloadLinks.get(number));
+                                selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+                            }
                         }
-                        // Send url list to gameactivity
-                        if(imageSelected.size() == gameDifficulty){
-                            //Make start button clickable only if all images are selected
-                            Intent intent=new Intent(getApplicationContext(), GameActivity.class);
-                            Bundle bundle=new Bundle();
-                            bundle.putInt("gameDifficulty", gameDifficulty);
-                            bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                        }
+                    }else{
+                        Toast.makeText(getApplicationContext(),"Unable to click",Toast.LENGTH_LONG).show();
                     }
                 }
             });
         }
+
+
+//      Send url list to gameactivity
+        startGameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imageSelected.size() == gameDifficulty) {
+                    Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("gameDifficulty", gameDifficulty);
+                    bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(),"The selected images are not enough!",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
@@ -132,18 +146,30 @@ public class MainActivity extends AppCompatActivity {
         urlInput = urlInputField.getText().toString();
 
         if (!urlInput.isEmpty()) {
+            //check the url's start
+            String urlInputNew = null;
+            if (urlInput.startsWith("http:")) {
+                urlInputNew = "https:" + urlInput.substring(6);
+            } else if (!urlInput.startsWith("https://")) {
+                urlInputNew = "https://" + urlInput;
+            } else {
+                urlInputNew = urlInput;
+            }
+
             if (currentTask != null) {
                 //cancel current task if running
                 currentTask.cancel(true);
             }
             //start new task
-            currentTask = new ExtractImageLinksFromHTML(urlInput);
+
+            currentTask = new ExtractImageLinksFromHTML(urlInputNew);
             currentTask.execute();
             selectText.setVisibility(View.GONE);
+            startGameBtn.setVisibility((View.GONE));
             imageSelected.clear();
             imgSelecttoSend.clear();
-            selectText.setText("Select "+imageSelected.size()+"/6 images");
-            for(int i=0;i<20;i++){
+            selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+            for (int i = 0; i < 20; i++) {
                 ImageView selected = imageViewList.get(i);
                 selected.setColorFilter(null);
             }
@@ -157,10 +183,10 @@ public class MainActivity extends AppCompatActivity {
         public ExtractImageLinksFromHTML(String urlInput) {
             this.urlInput = urlInput;
         }
-//        public List<String> imageDownloadLinks = new ArrayList<>();
+
         @Override
         protected Void doInBackground(Void... params) {
-
+            imageDownloadLinks.clear();
             try {
                 URL url = new URL(urlInput);
                 URLConnection urlConnection = url.openConnection();
@@ -209,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     if (imageDownloadLinks.size() == imageViewList.size()) {
-                        fullyloaded = true;
+//                        fullyloaded = true;
                         break;
                     }
                 }
