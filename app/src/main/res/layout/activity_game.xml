@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,7 +12,6 @@
         android:scaleType="centerCrop"/>
 
 <LinearLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -25,14 +25,14 @@
 
         <TextView
             android:id="@+id/matchCountTextView"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="7dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:text="@string/matches"
             android:textColor="@color/design_default_color_error"
             android:fontFamily="cursive"
-            android:textSize="25sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/difficulty"
@@ -42,10 +42,10 @@
             android:gravity="center"
             android:layout_alignParentEnd="true"
             android:text="@string/difficulty"
-            android:textColor="@color/design_default_color_error"
+            android:textColor="#808080"
             android:fontFamily="cursive"
             android:textAlignment="center"
-            android:textSize="25sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/timerTextView"
@@ -57,17 +57,18 @@
             android:textColor="@color/design_default_color_error"
             android:fontFamily="cursive"
             android:textAlignment="center"
-            android:textSize="25sp" />
+            android:textSize="22sp" />
 
         <ImageButton
             android:id="@+id/pauseBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="7dp"
-            android:backgroundTint="#FF9800"
-            app:srcCompat="@android:drawable/ic_media_pause"
-            android:visibility="gone"/>
+            android:layout_marginEnd="12dp"
+            android:background="#FF9800"
+            android:visibility="gone"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/ic_media_pause" />
     </RelativeLayout>
 
     <GridView

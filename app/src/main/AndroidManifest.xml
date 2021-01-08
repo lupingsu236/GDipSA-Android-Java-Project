@@ -19,14 +19,19 @@
             android:enabled="true"
             android:exported="true"/>
 
-        <activity android:name=".EndGameActivity" />
         <activity
             android:name=".GameActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".EndGameActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity
             android:name=".StartActivity"
             android:screenOrientation="portrait"
