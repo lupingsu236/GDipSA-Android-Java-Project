@@ -101,8 +101,10 @@ public class MainActivity extends AppCompatActivity {
             selected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (inactive == true) {return;}
-                    hideSoftKeyboard(MainActivity.this);
+                    if (inactive) {
+                        return;
+                    }
+
                     selectText.setVisibility(View.VISIBLE);
                     startGameBtn.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }else{
-                        Toast.makeText(getApplicationContext(),"Unable to click",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Unable to select",Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -152,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
         inactive = false;
-        hideSoftKeyboard(MainActivity.this);
         //if no change in url, return
         if (!urlInput.isEmpty() && urlInput.equals(urlInputField.getText().toString()))
             return;
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         urlInput = urlInputField.getText().toString();
 
         if (!urlInput.isEmpty()) {
+            hideSoftKeyboard(MainActivity.this);
             //check the url's start
             String urlInputNew = null;
             if (urlInput.startsWith("http:")) {
