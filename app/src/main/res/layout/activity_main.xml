@@ -176,7 +176,7 @@
         android:layout_height="32dp"
         android:text="@string/play"
         android:textColor="@color/white"
-        android:background="@drawable/start_button_shape"
+        android:background="@drawable/difficulty_button_shape"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/photoGrid"
         app:layout_constraintLeft_toLeftOf="parent"

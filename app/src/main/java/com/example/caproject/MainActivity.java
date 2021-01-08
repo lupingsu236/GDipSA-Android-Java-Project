@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                             imageSelected.remove(selected);
                             imgSelecttoSend.remove(imageDownloadLinks.get(number));
                             selectText.setText(imageSelected.size() + "/" + noOfImages + " images selected");
+                            startGameBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                         } else {
                             if (imageSelected.size() < noOfImages) {
                                 selected.setForeground((getDrawable(R.drawable.image_border_selected)));
@@ -123,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
                                 imageSelected.add(selected);
                                 imgSelecttoSend.add(imageDownloadLinks.get(number));
                                 selectText.setText(imageSelected.size() + "/" + noOfImages + " images selected");
+                                if (imageSelected.size() == noOfImages)
+                                    startGameBtn.setBackground(getDrawable(R.drawable.start_button_shape));
                             }
                         }
                     }else{
@@ -190,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 selected.setForeground(getDrawable(R.drawable.image_border));
                 selected.setTag(null);
             }
+            startGameBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
         } else
             Toast.makeText(this, "Please enter url", Toast.LENGTH_SHORT).show();
     }
