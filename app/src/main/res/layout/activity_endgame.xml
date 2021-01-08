@@ -32,7 +32,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/congrats"
         android:textAlignment="center"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textColor="@color/design_default_color_error"
         android:fontFamily="cursive"
         app:layout_constraintBottom_toTopOf="@+id/timerMessageView"
@@ -46,7 +46,7 @@
         android:fontFamily="cursive"
         android:textColor="@color/design_default_color_error"
         android:textAlignment="center"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/popperAnimation"
         tools:layout_editor_absoluteX="0dp" />
 
