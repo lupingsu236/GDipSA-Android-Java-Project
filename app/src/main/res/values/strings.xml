@@ -7,4 +7,6 @@
     <string name="normal">Normal</string>
     <string name="hard">Hard</string>
     <string name="start">Start!</string>
+    <string name="play">Play!</string>
+    <string name="difficulty">difficulty</string>
 </resources>

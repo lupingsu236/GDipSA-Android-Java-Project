@@ -113,8 +113,8 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
             else
             {
                 Intent intent = new Intent(this, MainActivity.class);
-                int gameDifficulty = ConvertDifficultyToNumber(difficultyChosen);
-                intent.putExtra("difficulty", gameDifficulty);
+                intent.putExtra("difficulty", difficultyChosen);
+                intent.putExtra("noOfImages", ConvertDifficultyToNumber(difficultyChosen));
                 startActivity(intent);
             }
         }
