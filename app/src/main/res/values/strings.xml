@@ -9,4 +9,6 @@
     <string name="start">Start!</string>
     <string name="play">Play!</string>
     <string name="difficulty">difficulty</string>
+    <string name="congrats">Congratulations!!</string>
+    <string name="back_to_start">Back to start</string>
 </resources>
