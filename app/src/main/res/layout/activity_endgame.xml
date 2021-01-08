@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
@@ -10,8 +12,6 @@
         android:scaleType="centerCrop"/>
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -51,15 +51,31 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:gravity="center"
         android:id="@+id/returnHomeBtn"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:background="@drawable/start_button_shape"
+        android:gravity="center"
         android:text="@string/back_to_start"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/leaderboardBtn"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popperAnimation" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/leaderboardBtn"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/start_button_shape"
+        android:gravity="center"
+        android:text="@string/leaderboard"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toEndOf="@id/returnHomeBtn"
         app:layout_constraintTop_toBottomOf="@+id/popperAnimation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }else{
-                        Toast.makeText(getApplicationContext(),"Unable to select",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Unable to select",Toast.LENGTH_SHORT).show();
                     }
                 }
             });
