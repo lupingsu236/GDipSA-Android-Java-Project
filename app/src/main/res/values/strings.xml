@@ -12,4 +12,6 @@
     <string name="congrats">Congratulations!!</string>
     <string name="back_to_start">Back to start</string>
     <string name="select_difficulty">Please select a difficulty before starting</string>
+    <string name="matches">Matches</string>
+    <string name="timer">0:00</string>
 </resources>

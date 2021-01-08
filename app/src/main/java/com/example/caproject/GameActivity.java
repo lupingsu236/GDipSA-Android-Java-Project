@@ -28,6 +28,7 @@ import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements PauseDialogFragment.IPauseDialogListener {
 
+    String difficulty;
     int numberOfPictures;
     ArrayList<String> chosenImages;
     Bitmap[] imageId;
@@ -53,7 +54,13 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         //Get information bundle from previous activity
         Bundle bundle = getIntent().getExtras();
         //Number of unique pictures
-        numberOfPictures = bundle.getInt("gameDifficulty");
+        numberOfPictures = bundle.getInt("noOfImages");
+        // Difficulty of game
+        difficulty = bundle.getString("difficulty");
+        // Display difficulty of the game
+        TextView difficultyTextView = findViewById(R.id.difficulty);
+        difficultyTextView.setText(String.format("%s%s %s", difficulty.substring(0,1).toUpperCase(),
+                difficulty.substring(1), getString(R.string.difficulty)));
         //ArrayList<String> of image urls
         chosenImages = bundle.getStringArrayList("urlSelectedtoSend");
         //Initialize the array to hold the images
@@ -173,7 +180,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             //Doubled cause the images are in pairs
             for(int j = 0; j < numberOfPictures; j++) {
                 //Set all pictures to the default placeholder
-                placeholderImg[i*numberOfPictures + j] = R.drawable.catqnmark2;
+                placeholderImg[i*numberOfPictures + j] = R.drawable.image_placeholder;
                 //Create an index-array of all images
                 shuffledPosition[i*numberOfPictures + j] = j;
                 //Initialize all flipped states to false
