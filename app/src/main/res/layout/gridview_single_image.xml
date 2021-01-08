@@ -12,6 +12,6 @@
         android:layout_height="90dp"
         android:layout_marginTop="12dp"
         android:layout_gravity="center_horizontal"
-        android:scaleType="fitXY"
-        android:src="@drawable/afraid" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_placeholder" />
 </LinearLayout>

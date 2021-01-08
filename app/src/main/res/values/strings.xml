@@ -1,10 +1,17 @@
 <resources>
-    <string name="app_name">CAproject</string>
-    <string name="enter_link">Enter link...</string>
+    <string name="app_name">Match4You</string>
+    <string name="enter_link">Enter link for pictures...</string>
     <string name="fetch">Fetch</string>
     <string name="img_desc">Image to be downloaded from link</string>
     <string name="easy">Easy</string>
     <string name="normal">Normal</string>
     <string name="hard">Hard</string>
     <string name="start">Start!</string>
+    <string name="play">Play!</string>
+    <string name="difficulty">difficulty</string>
+    <string name="congrats">Congratulations!!</string>
+    <string name="back_to_start">Back to start</string>
+    <string name="select_difficulty">Please select a difficulty before starting</string>
+    <string name="matches">Matches</string>
+    <string name="timer">0:00</string>
 </resources>

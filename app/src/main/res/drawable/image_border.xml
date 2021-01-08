@@ -6,13 +6,13 @@
                 android:color="@color/transparent"/>
 
             <corners
-                android:bottomRightRadius="2dp"
-                android:bottomLeftRadius="2dp"
-                android:topLeftRadius="2dp"
-                android:topRightRadius="2dp"/>
+                android:bottomRightRadius="3dp"
+                android:bottomLeftRadius="3dp"
+                android:topLeftRadius="3dp"
+                android:topRightRadius="3dp"/>
             <stroke
-                android:color="@color/black"
-                android:width="2dp"/>
+                android:color="#FFC107"
+                android:width="2.5dp"/>
         </shape>
     </item>
 

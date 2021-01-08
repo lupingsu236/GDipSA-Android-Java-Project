@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -26,11 +27,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements PauseDialogFragment.IPauseDialogListener {
-//    int[] imageId = {
-//            R.drawable.afraid, R.drawable.full, R.drawable.hug, R.drawable.laugh, R.drawable.no_way, R.drawable.peep, R.drawable.snore, R.drawable.stop, R.drawable.tired, R.drawable.what,
-//            R.drawable.afraid, R.drawable.full, R.drawable.hug, R.drawable.laugh, R.drawable.no_way, R.drawable.peep, R.drawable.snore, R.drawable.stop, R.drawable.tired, R.drawable.what
-//    }
 
+    String difficulty;
     int numberOfPictures;
     ArrayList<String> chosenImages;
     Bitmap[] imageId;
@@ -56,7 +54,13 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         //Get information bundle from previous activity
         Bundle bundle = getIntent().getExtras();
         //Number of unique pictures
-        numberOfPictures = bundle.getInt("gameDifficulty");
+        numberOfPictures = bundle.getInt("noOfImages");
+        // Difficulty of game
+        difficulty = bundle.getString("difficulty");
+        // Display difficulty of the game
+        TextView difficultyTextView = findViewById(R.id.difficulty);
+        difficultyTextView.setText(String.format("%s%s %s", difficulty.substring(0,1).toUpperCase(),
+                difficulty.substring(1), getString(R.string.difficulty)));
         //ArrayList<String> of image urls
         chosenImages = bundle.getStringArrayList("urlSelectedtoSend");
         //Initialize the array to hold the images
@@ -64,9 +68,8 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         //Insert images into the array
         int index_counter = 0;
         for(String imgurl : chosenImages) {
-            URL url = null;
             try {
-                url= new URL(imgurl);
+                URL url= new URL(imgurl);
                 Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                 imageId[index_counter] = image;
                 index_counter += 1;
@@ -102,26 +105,30 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             }
         };
 
-        //Pause game manually
+        //Set listener to pause button
         pauseBtn = findViewById(R.id.pauseBtn);
         pauseBtn.setOnClickListener(v -> pauseGame());
 
         //Set images to grid
         ImageAdapter adapter = new ImageAdapter(GameActivity.this, placeholderImg);
-        GridView grid=(GridView)findViewById(R.id.gameGrid);
+        GridView grid = findViewById(R.id.gameGrid);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //start game and timer
+                //start game, timer and music
                 if (!gameStart) {
                     gameStart = true;
                     pauseBtn.setVisibility(View.VISIBLE);
                     startTime = System.currentTimeMillis();
                     timerHandler.post(timerRunnable);
+                    Intent intent = new Intent(GameActivity.this, MusicService.class);
+                    intent.setAction("START_BG_MUSIC");
+                    startService(intent);
                 }
+
                 //only allow flipping if unflipped
-                if (flippedState[position] == false) {
+                if (!flippedState[position]) {
                     if (flipCount == 0) {
                         flip(view, position);
                         flipCount = 1;
@@ -145,7 +152,12 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
                 }
                 if (matches == numberOfPictures) {
                     gameStart = false;
+
+                    //stop timer and music
                     timerHandler.removeCallbacks(timerRunnable);
+                    Intent stopIntent = new Intent(GameActivity.this, MusicService.class);
+                    stopService(stopIntent);
+
                     goToEndPage();
                 }
             }
@@ -165,6 +177,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         }
         return shuffled;
     }
+
     public void initializeArrays() {
         //Array to pass to image adapter to initialize placeholder image
         placeholderImg = new int[numberOfPictures*2];
@@ -176,7 +189,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
             //Doubled cause the images are in pairs
             for(int j = 0; j < numberOfPictures; j++) {
                 //Set all pictures to the default placeholder
-                placeholderImg[i*numberOfPictures + j] = R.drawable.catqnmark2;
+                placeholderImg[i*numberOfPictures + j] = R.drawable.image_placeholder;
                 //Create an index-array of all images
                 shuffledPosition[i*numberOfPictures + j] = j;
                 //Initialize all flipped states to false
@@ -186,7 +199,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     }
 
     public void flip(View view, int position) {
-        ImageView imgview = (ImageView) view.findViewById(R.id.grid_image);
+        ImageView imgview = view.findViewById(R.id.grid_image);
         //instead of shuffling the bitmaps, we shuffle an array containing indexes
         //simply call the image at the shuffled index
         imgview.setImageBitmap(imageId[shuffledPosition[position]]);
@@ -196,46 +209,62 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     Handler handler = new Handler();
 
     public void flipback(AdapterView<?> parent, int prev_position, int position) {
-        ImageView imgview1 = (ImageView) parent.getChildAt(prev_position).findViewById(R.id.grid_image);
-        imgview1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                imgview1.setImageResource(placeholderImg[position]);
-                flippedState[prev_position] = false;
-            }
+        ImageView imgview1 = parent.getChildAt(prev_position).findViewById(R.id.grid_image);
+        imgview1.postDelayed(() -> {
+            imgview1.setImageResource(placeholderImg[position]);
+            flippedState[prev_position] = false;
         }, 500);
 
-        ImageView imgview2 = (ImageView) parent.getChildAt(position).findViewById(R.id.grid_image);
-        imgview2.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                imgview2.setImageResource(placeholderImg[position]);
-                flippedState[position] = false;
-            }
+        ImageView imgview2 = parent.getChildAt(position).findViewById(R.id.grid_image);
+        imgview2.postDelayed(() -> {
+            imgview2.setImageResource(placeholderImg[position]);
+            flippedState[position] = false;
         }, 500);
     }
 
     public boolean checkMatch(int prev_position, int position) {
         //shuffled indexes are paired
-        if(shuffledPosition[prev_position] == shuffledPosition[position]) {return true;}
-        else return false;
+        if(shuffledPosition[prev_position] == shuffledPosition[position]) {
+            return true;
+        } else
+            return false;
     }
 
     public void pauseGame() {
-        //show dialog and update time elapsed so far
+        //show dialog, update time elapsed so far, pause music
         timerHandler.removeCallbacks(timerRunnable);
         timeElapsed = timeElapsed + (System.currentTimeMillis() - startTime);
+
+        Intent intent = new Intent(GameActivity.this, MusicService.class);
+        intent.setAction("PAUSE_BG_MUSIC");
+        startService(intent);
+
         DialogFragment dialog = new PauseDialogFragment();
-       // dialog.setCancelable(false);
         dialog.show(getSupportFragmentManager(), "PauseDialogFragment");
+    }
+
+    @Override
+    public void onResumeGameClick(DialogFragment dialog) {
+        //restart timer
+        startTime = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
+
+        //play music
+        Intent intent = new Intent(GameActivity.this, MusicService.class);
+        intent.setAction("RESUME_BG_MUSIC");
+        startService(intent);
 
     }
 
     @Override
-    public void onDialoguePositiveClick(DialogFragment dialog) {
-        //restart timer
-        startTime = System.currentTimeMillis();
-        timerHandler.postDelayed(timerRunnable, 0);
+    public void onEndGameClick(DialogFragment dialog) {
+        //stop music
+        Intent stopIntent = new Intent(GameActivity.this, MusicService.class);
+        stopService(stopIntent);
+
+        //return to start activity
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -244,7 +273,18 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         pauseGame();
     }
 
+    //override back button so that game is paused instead of going to previous activity
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            pauseGame();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     public void goToEndPage(){
+        //send timing and start EndActivity
         long millis = (System.currentTimeMillis() - startTime) + timeElapsed;
         int seconds = (int) (millis / 1000);
         int minutes = seconds / 60;

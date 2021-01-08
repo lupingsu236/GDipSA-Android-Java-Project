@@ -22,6 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +39,8 @@ import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
-    private int gameDifficulty;
+    private int noOfImages;
+    private String difficulty;
     private boolean inactive = true;
     private EditText urlInputField;
     private Button fetchBtn;
@@ -61,8 +64,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        //Get game difficulty from previous activity
-        gameDifficulty = getIntent().getIntExtra("difficulty", 0);
+        // Get number of images based on difficulty from previous activity
+        noOfImages = getIntent().getIntExtra("noOfImages", 0);
+
+        // display difficulty in this activity
+        difficulty = getIntent().getStringExtra("difficulty");
+        TextView difficultyTextView = findViewById(R.id.difficulty);
+        difficultyTextView.setText(String.format("%s%s %s", difficulty.substring(0,1).toUpperCase(),
+                difficulty.substring(1), getString(R.string.difficulty)));
+
 
         // to enable network calls on the main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -91,27 +101,32 @@ public class MainActivity extends AppCompatActivity {
             selected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (inactive == true) {return;}
+                    if (inactive) {
+                        return;
+                    }
+
                     selectText.setVisibility(View.VISIBLE);
                     startGameBtn.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     progressText.setVisibility(View.GONE);
                     if (number < imageDownloadLinks.size()) {
-                        if (selected.getColorFilter() != null) {
-                            selected.setColorFilter(null);
+                        if (selected.getTag() != null){
+                            selected.setForeground(getDrawable(R.drawable.image_border));
+                            selected.setTag(null);
                             imageSelected.remove(selected);
                             imgSelecttoSend.remove(imageDownloadLinks.get(number));
-                            selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+                            selectText.setText(imageSelected.size() + "/" + noOfImages + " images selected");
                         } else {
-                            if (imageSelected.size() < gameDifficulty) {
-                                selected.setColorFilter(new LightingColorFilter(0x00ff00, 0x000000));
+                            if (imageSelected.size() < noOfImages) {
+                                selected.setForeground((getDrawable(R.drawable.image_border_selected)));
+                                selected.setTag("selected");
                                 imageSelected.add(selected);
                                 imgSelecttoSend.add(imageDownloadLinks.get(number));
-                                selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+                                selectText.setText(imageSelected.size() + "/" + noOfImages + " images selected");
                             }
                         }
                     }else{
-                        Toast.makeText(getApplicationContext(),"Unable to click",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Unable to select",Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -122,21 +137,23 @@ public class MainActivity extends AppCompatActivity {
         startGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imageSelected.size() == gameDifficulty) {
+                if (imageSelected.size() == noOfImages) {
                     Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("gameDifficulty", gameDifficulty);
+                    bundle.putInt("noOfImages", noOfImages);
                     bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
+                    bundle.putString("difficulty", difficulty);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(getApplicationContext(),"The selected images are not enough!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Insufficient images selected!",Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
+        inactive = false;
         //if no change in url, return
         if (!urlInput.isEmpty() && urlInput.equals(urlInputField.getText().toString()))
             return;
@@ -144,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
         urlInput = urlInputField.getText().toString();
 
         if (!urlInput.isEmpty()) {
-            inactive = false;
             hideSoftKeyboard(MainActivity.this);
             //check the url's start
             String urlInputNew = null;
@@ -168,10 +184,11 @@ public class MainActivity extends AppCompatActivity {
             startGameBtn.setVisibility((View.GONE));
             imageSelected.clear();
             imgSelecttoSend.clear();
-            selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+            selectText.setText("Select " + imageSelected.size() + "/" + noOfImages + " images");
             for (int i = 0; i < 20; i++) {
                 ImageView selected = imageViewList.get(i);
-                selected.setColorFilter(null);
+                selected.setForeground(getDrawable(R.drawable.image_border));
+                selected.setTag(null);
             }
         } else
             Toast.makeText(this, "Please enter url", Toast.LENGTH_SHORT).show();
@@ -212,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress(0);
                     progressText.setVisibility(View.VISIBLE);
-                    progressText.setText("Downloading 1 of 20 images");
+                    progressText.setText("Fetching images");
                     //reset all images to placeholder
                     for (ImageView image : imageViewList) {
                         image.setImageResource(R.drawable.image_placeholder);
@@ -251,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
             //set progress to 100 to cater for url with less than 20 images
             progressBar.setProgress(100);
-            progressText.setText("Download completed!");
+            progressText.setText("Download completed! Please select images");
         }
     }
 
