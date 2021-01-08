@@ -29,7 +29,9 @@ public class PauseDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         builder.setView(inflater.inflate(R.layout.dialog_pause, null))
-                .setNegativeButton("Resume", (dialog, id) ->
+                .setNegativeButton("Restart", (dialog, id) ->
+                                listener.onRestartGameClick(PauseDialogFragment.this))
+                .setNeutralButton("Resume", (dialog, id) ->
                                 listener.onResumeGameClick(PauseDialogFragment.this))
                 .setPositiveButton("End Game", (dialog, id) ->
                         listener.onEndGameClick(PauseDialogFragment.this));
@@ -39,14 +41,18 @@ public class PauseDialogFragment extends DialogFragment {
         dialog.show();
 
         //adjust button look and center all elements
-        Button resumeGameBtn = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        resumeGameBtn.setTextSize(20);
-        resumeGameBtn.setPadding(60,0,60,0);
-        Button endGameBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        endGameBtn.setTextSize(20);
-        endGameBtn.setPadding(60,0,60,0);
-        endGameBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-        LinearLayout parent = (LinearLayout) resumeGameBtn.getParent();
+        Button[] buttons = {dialog.getButton(AlertDialog.BUTTON_NEUTRAL),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)};
+
+        for (Button button : buttons) {
+            button.setTextSize(20);
+            button.setPadding(25,0,25,0);
+        }
+        buttons[1].setTextColor(ContextCompat.getColor(getContext(), R.color.purple_700));
+        buttons[2].setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+
+        LinearLayout parent = (LinearLayout) buttons[0].getParent();
         parent.setGravity(Gravity.CENTER_HORIZONTAL);
         View leftspacer = parent.getChildAt(1);
         leftspacer.setVisibility(View.GONE);
@@ -57,6 +63,7 @@ public class PauseDialogFragment extends DialogFragment {
     public interface IPauseDialogListener {
         void onResumeGameClick(DialogFragment dialog);
         void onEndGameClick(DialogFragment dialog);
+        void onRestartGameClick(DialogFragment dialog);
     }
 
     IPauseDialogListener listener;

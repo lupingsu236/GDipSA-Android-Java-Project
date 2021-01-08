@@ -35,6 +35,9 @@ public class Top3DialogFragment extends DialogFragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+        Button confirmBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        confirmBtn.setTextSize(18);
+
         return dialog;
     }
 

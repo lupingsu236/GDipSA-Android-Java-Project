@@ -266,6 +266,14 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     }
 
     @Override
+    public void onRestartGameClick(DialogFragment dialog) {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         pauseGame();
@@ -294,4 +302,5 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         intent.putExtra("gameMode", numberOfPictures);
         startActivity(intent);
     }
+
 }
