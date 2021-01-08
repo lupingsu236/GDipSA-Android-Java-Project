@@ -22,22 +22,23 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
-        player = MediaPlayer.create(this, R.raw.wish_you_were_here);
-        player.setLooping(true);
-        try {
-            player.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         if (action!=null) {
             switch (action) {
                 case "START_BG_MUSIC":
-                case "RESUME_BG_MUSIC":
+                    player = MediaPlayer.create(this, R.raw.wish_you_were_here);
+                    player.setLooping(true);
                     player.start();
                     break;
+                case "RESUME_BG_MUSIC":
+                    if(player!=null) {
+                        player.start();
+                    }
+                    break;
                 case "PAUSE_BG_MUSIC":
-                    player.pause();
+                    if (player!=null) {
+                        player.pause();
+                    }
                     break;
             }
         }

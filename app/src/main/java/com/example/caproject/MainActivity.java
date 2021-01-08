@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
             //set progress to 100 to cater for url with less than 20 images
             progressBar.setProgress(100);
-            progressText.setText("Download completed!");
+            progressText.setText("Download completed! Please select images");
         }
     }
 
