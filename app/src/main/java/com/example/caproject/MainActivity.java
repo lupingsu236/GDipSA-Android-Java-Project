@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (inactive == true) {return;}
-                    hideSoftKeyboard(MainActivity.this);
                     selectText.setVisibility(View.VISIBLE);
                     startGameBtn.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -138,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void fetchImageLinksIfUrlIsNonEmpty() {
-        inactive = false;
-        hideSoftKeyboard(MainActivity.this);
         //if no change in url, return
         if (!urlInput.isEmpty() && urlInput.equals(urlInputField.getText().toString()))
             return;
@@ -147,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
         urlInput = urlInputField.getText().toString();
 
         if (!urlInput.isEmpty()) {
+            inactive = false;
+            hideSoftKeyboard(MainActivity.this);
             //check the url's start
             String urlInputNew = null;
             if (urlInput.startsWith("http:")) {

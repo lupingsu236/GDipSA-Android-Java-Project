@@ -39,12 +39,22 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <Button
-        android:id="@+id/returnHomeBtn"
+    android:id="@+id/returnHomeBtn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Home"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.3"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/popperAnimation"></Button>
+
+    <Button
+        android:id="@+id/leaderboardBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Return To Homepage"
+        android:text="Leaderboard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/popperAnimation"></Button>
 

@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CAproject">
         <activity android:name=".EndGameActivity"></activity>
+        <activity android:name=".LeaderboardActivity"></activity>
         <activity android:name=".GameActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="portrait">

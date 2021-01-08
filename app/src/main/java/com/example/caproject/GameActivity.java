@@ -250,8 +250,10 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         int minutes = seconds / 60;
         seconds = seconds % 60;
         Intent intent = new Intent(this, EndGameActivity.class);
+        intent.putExtra("millis", millis);
         intent.putExtra("minutes", minutes);
         intent.putExtra("seconds", seconds);
+        intent.putExtra("gameMode", numberOfPictures);
         startActivity(intent);
     }
 }
