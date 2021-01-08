@@ -224,10 +224,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
 
     public boolean checkMatch(int prev_position, int position) {
         //shuffled indexes are paired
-        if(shuffledPosition[prev_position] == shuffledPosition[position]) {
-            return true;
-        } else
-            return false;
+        return shuffledPosition[prev_position] == shuffledPosition[position];
     }
 
     public void pauseGame() {
@@ -240,6 +237,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         startService(intent);
 
         DialogFragment dialog = new PauseDialogFragment();
+        dialog.setCancelable(false);
         dialog.show(getSupportFragmentManager(), "PauseDialogFragment");
     }
 

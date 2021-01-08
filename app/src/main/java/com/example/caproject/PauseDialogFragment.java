@@ -36,7 +36,6 @@ public class PauseDialogFragment extends DialogFragment {
 
         // Create the AlertDialog object
         AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
         dialog.show();
 
         //adjust button look and center all elements

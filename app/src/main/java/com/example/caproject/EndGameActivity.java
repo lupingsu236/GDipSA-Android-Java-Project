@@ -20,12 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import org.w3c.dom.Text;
 
 import java.io.IOException;
 
-public class EndGameActivity extends AppCompatActivity {
+public class EndGameActivity extends AppCompatActivity implements Top3DialogFragment.ITop3DialogListener{
 
     Button homeBtn;
     Button leaderboardBtn;
@@ -55,17 +56,10 @@ public class EndGameActivity extends AppCompatActivity {
         int minutes = getIntent().getIntExtra("minutes", 0);
         int seconds = getIntent().getIntExtra("seconds", 0);
 
-        //Build alert dialog
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Enter your name for the leaderboard:");
-        final EditText nameInput = new EditText(this);
-        alert.setView(nameInput);
-        alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                name = nameInput.getText().toString();
-                return;
-            }
-        });
+        //create alert dialog
+        DialogFragment alert = new Top3DialogFragment();
+        alert.setCancelable(false);
+
 
         //Set shared preferences to save scores
         sharedPref = context.getSharedPreferences(gameDifficultyString, Context.MODE_PRIVATE);
@@ -77,48 +71,42 @@ public class EndGameActivity extends AppCompatActivity {
         //Trigger dialog if requirements are met
         if (millis < firstTime || (firstTime == 0)) {
             editor.putLong("firstTime", millis);
-            alert.show();
+            alert.show(getSupportFragmentManager(), "Top3DialogFragment");
         }
         else if (millis < secondTime || (secondTime == 0)) {
             editor.putLong("secondTime", millis);
-            alert.show();
+            alert.show(getSupportFragmentManager(), "Top3DialogFragment");
         }
         else if (millis < thirdTime || (thirdTime == 0)) {
             editor.putLong("thirdTime", millis);
-            alert.show();
+            alert.show(getSupportFragmentManager(), "Top3DialogFragment");
         }
         editor.commit();
 
-        TextView timerMessageView = (TextView) findViewById(R.id.timerMessageView);
+        TextView timerMessageView = findViewById(R.id.timerMessageView);
         timerMessageView.setText(String.format("You only took %dmin %dseconds!", minutes, seconds));
 
-        ImageView popper = (ImageView) findViewById(R.id.popperAnimation);
+        ImageView popper = findViewById(R.id.popperAnimation);
         loadGif(popper);
 
         MediaPlayer clap = MediaPlayer.create(this,R.raw.applause8);
         clap.start();
 
-        homeBtn = (Button) findViewById(R.id.returnHomeBtn);
-        homeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setName();
-                finish();
-                Intent intent = new Intent(view.getContext(), StartActivity.class);
-                view.getContext().startActivity(intent);
-            }
+        homeBtn = findViewById(R.id.returnHomeBtn);
+        homeBtn.setOnClickListener(view -> {
+            setName();
+            finish();
+            Intent intent = new Intent(view.getContext(), StartActivity.class);
+            view.getContext().startActivity(intent);
         });
 
-        leaderboardBtn = (Button) findViewById(R.id.leaderboardBtn);
-        leaderboardBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setName();
-                finish();
-                Intent intent = new Intent(view.getContext(), LeaderboardActivity.class);
-                intent.putExtra("difficulty", gameDifficultyString);
-                view.getContext().startActivity(intent);
-            }
+        leaderboardBtn = findViewById(R.id.leaderboardBtn);
+        leaderboardBtn.setOnClickListener(view -> {
+            setName();
+            finish();
+            Intent intent = new Intent(view.getContext(), LeaderboardActivity.class);
+            intent.putExtra("difficulty", gameDifficultyString);
+            view.getContext().startActivity(intent);
         });
     }
 
@@ -156,5 +144,10 @@ public class EndGameActivity extends AppCompatActivity {
                     "IOException: \n" + e.getMessage(),
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onConfirmClick(String nameInput) {
+        name = nameInput;
     }
 }

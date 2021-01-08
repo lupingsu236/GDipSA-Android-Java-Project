@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/app_name" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/congrats_top3"
+        android:textAlignment="center"
+        android:textColor="#555454"
+        android:textSize="18sp"
+        android:textStyle="italic" />
+
+    <EditText
+        android:id="@+id/nameInput"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:inputType="textPersonName"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/player"
+        android:textAlignment="center"
+        android:textColor="#555454"
+        android:textSize="18sp" />
+
+
+</LinearLayout>
