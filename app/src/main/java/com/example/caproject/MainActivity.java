@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 selected.setForeground(getDrawable(R.drawable.image_border));
                 selected.setTag(null);
             }
+            startGameBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
         } else
             Toast.makeText(this, "Please enter url", Toast.LENGTH_SHORT).show();
     }
