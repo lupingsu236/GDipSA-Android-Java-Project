@@ -11,19 +11,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CAproject"
         android:usesCleartextTraffic="true">
+
         <service
             android:name=".MusicService"
-            android:enabled="true"
-            android:exported="true"></service>
+            android:enabled="true" />
 
         <activity android:name=".EndGameActivity" />
         <activity
             android:name=".GameActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".StartActivity"
             android:screenOrientation="portrait"
