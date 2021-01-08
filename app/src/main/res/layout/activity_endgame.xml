@@ -43,7 +43,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="You only took 1min 30seconds!"
         android:fontFamily="cursive"
         android:textColor="@color/design_default_color_error"
         android:textAlignment="center"
