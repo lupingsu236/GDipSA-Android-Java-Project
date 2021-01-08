@@ -148,12 +148,13 @@
         android:id="@+id/startGameBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
+        android:background="#EAE6E6"
         android:text="START"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/photoGrid"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/selectText"/>
+        app:layout_constraintStart_toEndOf="@id/selectText"
+        app:layout_constraintTop_toBottomOf="@id/photoGrid" />
 
     <ProgressBar
         android:id="@+id/progressBar"

@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
@@ -103,12 +104,18 @@ public class MainActivity extends AppCompatActivity {
                             imageSelected.remove(selected);
                             imgSelecttoSend.remove(imageDownloadLinks.get(number));
                             selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+                            if(imageSelected.size() < gameDifficulty){
+                                startGameBtn.setBackgroundColor(Color.parseColor("#EAE6E6"));
+                            }
                         } else {
                             if (imageSelected.size() < gameDifficulty) {
                                 selected.setColorFilter(new LightingColorFilter(0x00ff00, 0x000000));
                                 imageSelected.add(selected);
                                 imgSelecttoSend.add(imageDownloadLinks.get(number));
                                 selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
+                                if(imageSelected.size() == gameDifficulty){
+                                    startGameBtn.setBackgroundColor(Color.parseColor("#33ffff"));
+                                }
                             }
                         }
                     }else{
@@ -169,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
             startGameBtn.setVisibility((View.GONE));
             imageSelected.clear();
             imgSelecttoSend.clear();
+            startGameBtn.setBackgroundColor(Color.parseColor("#EAE6E6"));
             selectText.setText("Select " + imageSelected.size() + "/" + gameDifficulty + " images");
             for (int i = 0; i < 20; i++) {
                 ImageView selected = imageViewList.get(i);
@@ -252,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
             //set progress to 100 to cater for url with less than 20 images
             progressBar.setProgress(100);
-            progressText.setText("Download completed!");
+            progressText.setText("Download completed! Please select images!");
         }
     }
 
