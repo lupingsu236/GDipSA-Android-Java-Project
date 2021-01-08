@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/app_background_image"
+        android:scaleType="centerCrop"/>
+
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,9 +30,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="Congratulations!!"
+        android:text="@string/congrats"
         android:textAlignment="center"
-        android:textSize="30dp"
+        android:textSize="30sp"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"
         app:layout_constraintBottom_toTopOf="@+id/timerMessageView"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -32,20 +43,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="You only took 1min 30seconds!"
+        android:fontFamily="cursive"
+        android:textColor="@color/design_default_color_error"
         android:textAlignment="center"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/popperAnimation"
         tools:layout_editor_absoluteX="0dp" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
+        android:gravity="center"
         android:id="@+id/returnHomeBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:text="Return To Homepage"
+        android:background="@drawable/start_button_shape"
+        android:text="@string/back_to_start"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popperAnimation"></Button>
+        app:layout_constraintTop_toBottomOf="@+id/popperAnimation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

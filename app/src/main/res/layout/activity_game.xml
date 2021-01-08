@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/app_background_image"
+        android:scaleType="centerCrop"/>
+
+<LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,36 +25,53 @@
 
         <TextView
             android:id="@+id/matchCountTextView"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="@string/matches"
+            android:textColor="@color/design_default_color_error"
+            android:fontFamily="cursive"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/difficulty"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="Matches"
+            android:layout_marginEnd="88dp"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:text="@string/difficulty"
+            android:textColor="@color/design_default_color_error"
+            android:fontFamily="cursive"
             android:textAlignment="center"
-            android:textSize="26dp" />
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/timerTextView"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="50dp"
-            android:text="0:00"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="25dp"
+            android:text="@string/timer"
+            android:textColor="@color/design_default_color_error"
+            android:fontFamily="cursive"
             android:textAlignment="center"
-            android:textSize="26dp" />
+            android:textSize="25sp" />
 
         <ImageButton
             android:id="@+id/pauseBtn"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="7dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="7dp"
             android:backgroundTint="#FF9800"
             app:srcCompat="@android:drawable/ic_media_pause"
             android:visibility="gone"/>
     </RelativeLayout>
 
     <GridView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/gameGrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,3 +82,4 @@
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp" />
 </LinearLayout>
+</FrameLayout>

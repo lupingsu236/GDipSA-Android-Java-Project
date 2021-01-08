@@ -138,8 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 if (imageSelected.size() == noOfImages) {
                     Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("gameDifficulty", noOfImages);
+                    bundle.putInt("noOfImages", noOfImages);
                     bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
+                    bundle.putString("difficulty", difficulty);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }else{
