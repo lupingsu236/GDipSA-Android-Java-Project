@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LeaderboardActivity extends AppCompatActivity {
-
+    //This is important
     Button homeBtn2;
     SharedPreferences sharedPref;
 
