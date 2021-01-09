@@ -159,7 +159,10 @@ public class EndGameActivity extends AppCompatActivity implements Top3DialogFrag
 
     @Override
     public void onConfirmClick(String nameInput) {
-        name = nameInput;
+        if (!nameInput.isEmpty())
+            name = nameInput;
+        else
+            name = "Player";
         saveValues();
     }
 }
