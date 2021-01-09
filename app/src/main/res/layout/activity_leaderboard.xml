@@ -51,88 +51,85 @@
         android:id="@+id/firstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="370dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="368dp"
         android:fontFamily="cursive"
         android:text="@string/placeholder"
         android:textAlignment="viewStart"
         android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/firstTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="370dp"
+        android:layout_marginBottom="368dp"
+        android:fontFamily="cursive"
         android:text="0 min 30 sec"
+        android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/design_default_color_error"
-        android:fontFamily="cursive"/>
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/secondName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="310dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="308dp"
         android:fontFamily="cursive"
         android:text="@string/placeholder"
         android:textAlignment="viewStart"
         android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/secondTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="310dp"
+        android:layout_marginBottom="308dp"
+        android:fontFamily="cursive"
         android:text="1 min 30 sec"
+        android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/design_default_color_error"
-        android:fontFamily="cursive"/>
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/thirdName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="250dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="248dp"
         android:fontFamily="cursive"
         android:text="@string/placeholder"
         android:textAlignment="viewStart"
         android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/thirdTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="250dp"
+        android:layout_marginBottom="248dp"
+        android:fontFamily="cursive"
         android:text="2 min 00 sec"
+        android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/design_default_color_error"
-        android:fontFamily="cursive"/>
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/returnHomeBtn2"
