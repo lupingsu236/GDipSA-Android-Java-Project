@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (imageSelected.size() == noOfImages) {
+                    finish();
                     Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt("noOfImages", noOfImages);

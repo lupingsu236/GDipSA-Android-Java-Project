@@ -291,6 +291,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
 
     public void goToEndPage(){
         //send timing and start EndActivity
+        finish();
         long millis = (System.currentTimeMillis() - startTime) + timeElapsed;
         int seconds = (int) (millis / 1000);
         int minutes = seconds / 60;

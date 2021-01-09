@@ -63,25 +63,20 @@ public class EndGameActivity extends AppCompatActivity implements Top3DialogFrag
 
         //Set shared preferences to save scores
         sharedPref = context.getSharedPreferences(gameDifficultyString, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
         firstTime = sharedPref.getLong("firstTime", 0);
         secondTime = sharedPref.getLong("secondTime", 0);
         thirdTime = sharedPref.getLong("thirdTime", 0);
 
         //Trigger dialog if requirements are met
         if (millis < firstTime || (firstTime == 0)) {
-            editor.putLong("firstTime", millis);
             alert.show(getSupportFragmentManager(), "Top3DialogFragment");
         }
         else if (millis < secondTime || (secondTime == 0)) {
-            editor.putLong("secondTime", millis);
             alert.show(getSupportFragmentManager(), "Top3DialogFragment");
         }
         else if (millis < thirdTime || (thirdTime == 0)) {
-            editor.putLong("thirdTime", millis);
             alert.show(getSupportFragmentManager(), "Top3DialogFragment");
         }
-        editor.commit();
 
         TextView timerMessageView = findViewById(R.id.timerMessageView);
         timerMessageView.setText(String.format("You only took %dmin %dseconds!", minutes, seconds));
@@ -92,36 +87,56 @@ public class EndGameActivity extends AppCompatActivity implements Top3DialogFrag
         MediaPlayer clap = MediaPlayer.create(this,R.raw.applause8);
         clap.start();
 
-        homeBtn = findViewById(R.id.returnHomeBtn);
-        homeBtn.setOnClickListener(view -> {
-            setName();
-            finish();
-            Intent intent = new Intent(view.getContext(), StartActivity.class);
-            view.getContext().startActivity(intent);
+        homeBtn = (Button) findViewById(R.id.returnHomeBtn);
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                Intent intent = new Intent(view.getContext(), StartActivity.class);
+                view.getContext().startActivity(intent);
+            }
         });
 
-        leaderboardBtn = findViewById(R.id.leaderboardBtn);
-        leaderboardBtn.setOnClickListener(view -> {
-            setName();
-            finish();
-            Intent intent = new Intent(view.getContext(), LeaderboardActivity.class);
-            intent.putExtra("difficulty", gameDifficultyString);
-            view.getContext().startActivity(intent);
+        leaderboardBtn = (Button) findViewById(R.id.leaderboardBtn);
+        leaderboardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                Intent intent = new Intent(view.getContext(), LeaderboardActivity.class);
+                intent.putExtra("difficulty", gameDifficultyString);
+                view.getContext().startActivity(intent);
+            }
         });
     }
 
-    public void setName() {
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intent = new Intent(EndGameActivity.this, StartActivity.class);
+        startActivity(intent);
+    }
+
+    public void saveValues() {
         Context context = getApplicationContext();
         sharedPref = context.getSharedPreferences(gameDifficultyString, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         if (millis < firstTime || (firstTime == 0)) {
+            editor.putString("thirdName", sharedPref.getString("secondName", "--"));
+            editor.putLong("thirdTime", sharedPref.getLong("secondTime", 0));
+            editor.putString("secondName", sharedPref.getString("firstName", "--"));
+            editor.putLong("secondTime", sharedPref.getLong("firstTime", 0));
             editor.putString("firstName", name);
+            editor.putLong("firstTime", millis);
         }
         else if (millis < secondTime || (secondTime == 0)) {
+            editor.putString("thirdName", sharedPref.getString("secondName", "--"));
+            editor.putLong("thirdTime", sharedPref.getLong("secondTime", 0));
             editor.putString("secondName", name);
+            editor.putLong("secondTime", millis);
         }
         else if (millis < thirdTime || (thirdTime == 0)) {
             editor.putString("thirdName", name);
+            editor.putLong("thirdTime", millis);
         }
         editor.commit();
     }

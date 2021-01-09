@@ -26,12 +26,20 @@ public class LeaderboardActivity extends AppCompatActivity {
         long secondTime = sharedPref.getLong("secondTime", 0);
         long thirdTime = sharedPref.getLong("thirdTime", 0);
 
-        String firstName = sharedPref.getString("firstName", "First");
-        String secondName = sharedPref.getString("secondName", "Second");
-        String thirdName = sharedPref.getString("thirdName", "Third");
+        String firstName = sharedPref.getString("firstName", "--");
+        String secondName = sharedPref.getString("secondName", "--");
+        String thirdName = sharedPref.getString("thirdName", "--");
+
+        long millis = getIntent().getLongExtra("millis", 0);
+        int seconds = (int) (millis / 1000);
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+
+        TextView yourScore = (TextView) findViewById(R.id.yourScore);
+        yourScore.setText(String.format("Your score is %d min %d sec", minutes, seconds));
 
         TextView difficultyView = (TextView) findViewById(R.id.difficultyLevel);
-        difficultyView.setText("Difficulty: " + difficulty);
+        difficultyView.setText("Leaderboard: " + difficulty + "-Mode");
 
         TextView firstTimeView = (TextView) findViewById(R.id.firstTime);
         firstTimeView.setText(displayAsTime(firstTime));
@@ -58,7 +66,15 @@ public class LeaderboardActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intent = new Intent(LeaderboardActivity.this, StartActivity.class);
+        startActivity(intent);
+    }
+
     public String displayAsTime(long millis) {
+        if (millis == 0) return "--";
         int seconds = (int) (millis / 1000);
         int minutes = seconds / 60;
         seconds = seconds % 60;
