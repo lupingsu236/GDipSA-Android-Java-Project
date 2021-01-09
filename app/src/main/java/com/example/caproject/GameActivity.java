@@ -253,9 +253,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
 
     @Override
     public void onEndGameClick(DialogFragment dialog) {
-        //stop music
-        Intent stopIntent = new Intent(GameActivity.this, MusicService.class);
-        stopService(stopIntent);
+        stopGame();
 
         //return to start activity
         Intent intent = new Intent(this, StartActivity.class);
@@ -264,6 +262,7 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
 
     @Override
     public void onRestartGameClick(DialogFragment dialog) {
+        stopGame();
         finish();
         overridePendingTransition(0, 0);
         startActivity(getIntent());
@@ -273,7 +272,8 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
     @Override
     protected void onPause() {
         super.onPause();
-        pauseGame();
+        if (gameStart)
+            pauseGame();
     }
 
     //override back button so that game is paused instead of going to previous activity
@@ -292,7 +292,9 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
 
     public void goToEndPage(){
         //send timing and start EndActivity
+        stopGame();
         finish();
+
         long millis = (System.currentTimeMillis() - startTime) + timeElapsed;
         int seconds = (int) (millis / 1000);
         int minutes = seconds / 60;
@@ -303,6 +305,13 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         intent.putExtra("seconds", seconds);
         intent.putExtra("gameMode", numberOfPictures);
         startActivity(intent);
+    }
+
+    public void stopGame(){
+        gameStart = false;
+        Intent stopIntent = new Intent(GameActivity.this, MusicService.class);
+        stopService(stopIntent);
+        timerHandler.removeCallbacks(timerRunnable);
     }
 
 }
