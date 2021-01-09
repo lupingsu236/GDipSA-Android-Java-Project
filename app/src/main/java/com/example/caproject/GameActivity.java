@@ -113,53 +113,50 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
         ImageAdapter adapter = new ImageAdapter(GameActivity.this, placeholderImg);
         GridView grid = findViewById(R.id.gameGrid);
         grid.setAdapter(adapter);
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //start game, timer and music
-                if (!gameStart) {
-                    gameStart = true;
-                    pauseBtn.setVisibility(View.VISIBLE);
-                    startTime = System.currentTimeMillis();
-                    timerHandler.post(timerRunnable);
-                    Intent intent = new Intent(GameActivity.this, MusicService.class);
-                    intent.setAction("START_BG_MUSIC");
-                    startService(intent);
-                }
+        grid.setOnItemClickListener((parent, view, position, id) -> {
+            //start game, timer and music
+            if (!gameStart) {
+                gameStart = true;
+                pauseBtn.setVisibility(View.VISIBLE);
+                startTime = System.currentTimeMillis();
+                timerHandler.post(timerRunnable);
+                Intent intent = new Intent(GameActivity.this, MusicService.class);
+                intent.setAction("START_BG_MUSIC");
+                startService(intent);
+            }
 
-                //only allow flipping if unflipped
-                if (!flippedState[position]) {
-                    if (flipCount == 0) {
-                        flip(view, position);
-                        flipCount = 1;
-                        //save previous position for flipback
-                        prev_position = position;
+            //only allow flipping if unflipped
+            if (!flippedState[position]) {
+                if (flipCount == 0) {
+                    flip(view, position);
+                    flipCount = 1;
+                    //save previous position for flipback
+                    prev_position = position;
+                }
+                else if (flipCount == 1) {
+                    flip(view, position);
+                    boolean match = checkMatch(prev_position, position);
+                    if (match) {
+                        matches += 1;
+                        correctSound.start();
+                        flipCount = 0;
+                        matchCountTextView.setText(String.format("Matches: %d/%d", matches, numberOfPictures));
                     }
-                    else if (flipCount == 1) {
-                        flip(view, position);
-                        boolean match = checkMatch(prev_position, position);
-                        if (match) {
-                            matches += 1;
-                            correctSound.start();
-                            flipCount = 0;
-                            matchCountTextView.setText(String.format("Matches: %d/%d", matches, numberOfPictures));
-                        }
-                        else {
-                            flipCount = 0;
-                            flipback(parent, prev_position, position);
-                        }
+                    else {
+                        flipCount = 0;
+                        flipback(parent, prev_position, position);
                     }
                 }
-                if (matches == numberOfPictures) {
-                    gameStart = false;
+            }
+            if (matches == numberOfPictures) {
+                gameStart = false;
 
-                    //stop timer and music
-                    timerHandler.removeCallbacks(timerRunnable);
-                    Intent stopIntent = new Intent(GameActivity.this, MusicService.class);
-                    stopService(stopIntent);
+                //stop timer and music
+                timerHandler.removeCallbacks(timerRunnable);
+                Intent stopIntent = new Intent(GameActivity.this, MusicService.class);
+                stopService(stopIntent);
 
-                    goToEndPage();
-                }
+                goToEndPage();
             }
         });
 
@@ -281,12 +278,16 @@ public class GameActivity extends AppCompatActivity implements PauseDialogFragme
 
     //override back button so that game is paused instead of going to previous activity
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+    public void onBackPressed() {
+        if (gameStart)
             pauseGame();
-            return true;
+        else {
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("difficulty", difficulty);
+            intent.putExtra("noOfImages", numberOfPictures);
+            startActivity(intent);
         }
-        return super.onKeyDown(keyCode, event);
     }
 
     public void goToEndPage(){

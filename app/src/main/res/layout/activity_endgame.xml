@@ -57,7 +57,7 @@
         android:layout_marginTop="4dp"
         android:background="@drawable/start_button_shape"
         android:gravity="center"
-        android:text="@string/back_to_start"
+        android:text="@string/back_to_main"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/leaderboardBtn"
         app:layout_constraintHorizontal_bias="0.4"

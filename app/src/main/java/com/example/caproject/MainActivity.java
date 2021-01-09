@@ -98,60 +98,54 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 20; i++) {
             ImageView selected = imageViewList.get(i);
             int number = i;
-            selected.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (inactive) {
-                        return;
-                    }
+            selected.setOnClickListener(v -> {
+                if (inactive) {
+                    return;
+                }
 
-                    selectText.setVisibility(View.VISIBLE);
-                    startGameBtn.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                    progressText.setVisibility(View.GONE);
-                    if (number < imageDownloadLinks.size()) {
-                        if (selected.getTag() != null){
-                            selected.setForeground(getDrawable(R.drawable.image_border));
-                            selected.setTag(null);
-                            imageSelected.remove(selected);
-                            imgSelecttoSend.remove(imageDownloadLinks.get(number));
+                selectText.setVisibility(View.VISIBLE);
+                startGameBtn.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                progressText.setVisibility(View.GONE);
+                if (number < imageDownloadLinks.size()) {
+                    if (selected.getTag() != null){
+                        selected.setForeground(getDrawable(R.drawable.image_border));
+                        selected.setTag(null);
+                        imageSelected.remove(selected);
+                        imgSelecttoSend.remove(imageDownloadLinks.get(number));
+                        selectText.setText(imageSelected.size() + "/" + noOfImages + " images selected");
+                        startGameBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
+                    } else {
+                        if (imageSelected.size() < noOfImages) {
+                            selected.setForeground((getDrawable(R.drawable.image_border_selected)));
+                            selected.setTag("selected");
+                            imageSelected.add(selected);
+                            imgSelecttoSend.add(imageDownloadLinks.get(number));
                             selectText.setText(imageSelected.size() + "/" + noOfImages + " images selected");
-                            startGameBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
-                        } else {
-                            if (imageSelected.size() < noOfImages) {
-                                selected.setForeground((getDrawable(R.drawable.image_border_selected)));
-                                selected.setTag("selected");
-                                imageSelected.add(selected);
-                                imgSelecttoSend.add(imageDownloadLinks.get(number));
-                                selectText.setText(imageSelected.size() + "/" + noOfImages + " images selected");
-                                if (imageSelected.size() == noOfImages)
-                                    startGameBtn.setBackground(getDrawable(R.drawable.start_button_shape));
-                            }
+                            if (imageSelected.size() == noOfImages)
+                                startGameBtn.setBackground(getDrawable(R.drawable.start_button_shape));
                         }
-                    }else{
-                        Toast.makeText(getApplicationContext(),"Unable to select",Toast.LENGTH_SHORT).show();
                     }
+                }else{
+                    Toast.makeText(getApplicationContext(),"Unable to select",Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
 
 //      Send url list to gameactivity
-        startGameBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (imageSelected.size() == noOfImages) {
-                    finish();
-                    Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("noOfImages", noOfImages);
-                    bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
-                    bundle.putString("difficulty", difficulty);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(getApplicationContext(),"Insufficient images selected!",Toast.LENGTH_SHORT).show();
-                }
+        startGameBtn.setOnClickListener(v -> {
+            if (imageSelected.size() == noOfImages) {
+                finish();
+                Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("noOfImages", noOfImages);
+                bundle.putStringArrayList("urlSelectedtoSend", imgSelecttoSend);
+                bundle.putString("difficulty", difficulty);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }else{
+                Toast.makeText(getApplicationContext(),"Insufficient images selected!",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -167,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         if (!urlInput.isEmpty()) {
             hideSoftKeyboard(MainActivity.this);
             //check the url's start
-            String urlInputNew = null;
+            String urlInputNew;
             if (urlInput.startsWith("http:")) {
                 urlInputNew = "https:" + urlInput.substring(6);
             } else if (!urlInput.startsWith("https://")) {
@@ -216,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 InputStream inputStream = urlConnection.getInputStream();
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(inputStream));
-                String line = null;
+                String line;
                 StringBuffer sb = new StringBuffer();
                 while ((line = reader.readLine()) != null) {
                     sb.append(line, 0, line.length());
@@ -260,9 +254,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (IllegalStateException | IOException e) {
                 e.printStackTrace();
             }
             Void v = null;
@@ -283,5 +275,12 @@ public class MainActivity extends AppCompatActivity {
                         Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
     }
 }
