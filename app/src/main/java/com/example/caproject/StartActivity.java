@@ -44,6 +44,8 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         Button easyBtn = findViewById(R.id.easyBtn);
         Button normalBtn = findViewById(R.id.normalBtn);
         Button hardBtn = findViewById(R.id.hardBtn);
+        Button startBtn = findViewById(R.id.startBtn);
+
 
         int id = view.getId();
 
@@ -52,6 +54,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
             if (difficultyBtnClickState.get("easy"))
             {
                 easyBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
+                startBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                 difficultyBtnClickState.put("easy", false);
                 difficultyChosen = null;
             }
@@ -60,6 +63,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
                 easyBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape_clicked));
                 normalBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                 hardBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
+                startBtn.setBackground(getDrawable(R.drawable.start_button_shape));
                 difficultyBtnClickState.put("easy", true);
                 difficultyBtnClickState.put("normal", false);
                 difficultyBtnClickState.put("hard", false);
@@ -71,6 +75,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
             if (difficultyBtnClickState.get("normal"))
             {
                 normalBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
+                startBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                 difficultyBtnClickState.put("normal", false);
                 difficultyChosen = null;
             }
@@ -79,6 +84,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
                 easyBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                 normalBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape_clicked));
                 hardBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
+                startBtn.setBackground(getDrawable(R.drawable.start_button_shape));
                 difficultyBtnClickState.put("easy", false);
                 difficultyBtnClickState.put("normal", true);
                 difficultyBtnClickState.put("hard", false);
@@ -90,6 +96,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
             if (difficultyBtnClickState.get("hard"))
             {
                 hardBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
+                startBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                 difficultyBtnClickState.put("hard", false);
                 difficultyChosen = null;
             }
@@ -98,6 +105,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
                 easyBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                 normalBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape));
                 hardBtn.setBackground(getDrawable(R.drawable.difficulty_button_shape_clicked));
+                startBtn.setBackground(getDrawable(R.drawable.start_button_shape));
                 difficultyBtnClickState.put("easy", false);
                 difficultyBtnClickState.put("normal", false);
                 difficultyBtnClickState.put("hard", true);
