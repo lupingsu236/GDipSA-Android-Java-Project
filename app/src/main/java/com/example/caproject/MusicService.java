@@ -1,17 +1,9 @@
 package com.example.caproject;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
-
-import java.io.IOException;
 
 public class MusicService extends Service {
     MediaPlayer player;
@@ -28,7 +20,7 @@ public class MusicService extends Service {
                 case "START_BG_MUSIC":
                     player = MediaPlayer.create(this, R.raw.wish_you_were_here);
                     player.setLooping(true);
-                    player.start();
+                    player.setOnPreparedListener(mp -> player.start());
                     break;
                 case "RESUME_BG_MUSIC":
                     if(player!=null) {
@@ -41,6 +33,7 @@ public class MusicService extends Service {
                     }
                     break;
             }
+
         }
 
         return START_NOT_STICKY;
