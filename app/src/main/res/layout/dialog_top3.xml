@@ -34,7 +34,8 @@
         android:text="@string/player"
         android:textAlignment="center"
         android:textColor="#555454"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:maxLength="10"/>
 
 
 </LinearLayout>

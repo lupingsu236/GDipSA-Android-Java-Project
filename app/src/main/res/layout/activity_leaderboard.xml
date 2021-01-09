@@ -12,7 +12,8 @@
         android:scaleType="centerCrop"
         android:src="@drawable/app_background_image"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        tools:layout_editor_absoluteY="0dp"
+        android:contentDescription="background"/>
 
     <TextView
         android:id="@+id/yourScore"
@@ -35,30 +36,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:fontFamily="cursive"
         android:text="@string/leaderboard"
+        android:textColor="#292525"
         android:textSize="46sp"
         app:layout_constraintBottom_toTopOf="@+id/firstName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.90"
-        android:textColor="@color/design_default_color_error"
-        android:fontFamily="cursive"/>
+        app:layout_constraintVertical_bias="0.90" />
 
     <TextView
         android:id="@+id/firstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="370dp"
+        android:fontFamily="cursive"
         android:text="@string/placeholder"
+        android:textAlignment="viewStart"
+        android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/design_default_color_error"
-        android:fontFamily="cursive"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/firstTime"
@@ -79,14 +81,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="310dp"
+        android:fontFamily="cursive"
         android:text="@string/placeholder"
+        android:textAlignment="viewStart"
+        android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/design_default_color_error"
-        android:fontFamily="cursive"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/secondTime"
@@ -107,14 +110,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="250dp"
+        android:fontFamily="cursive"
         android:text="@string/placeholder"
+        android:textAlignment="viewStart"
+        android:textColor="@color/design_default_color_error"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/design_default_color_error"
-        android:fontFamily="cursive"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/thirdTime"
@@ -135,8 +139,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20sp"
-        android:text="Back To Start"
-        android:textSize="28sp"
+        android:text="@string/back_to_start"
+        android:textSize="20sp"
         android:textColor="@color/white"
         android:background="@drawable/start_button_shape"
         app:layout_constraintBottom_toBottomOf="parent"
