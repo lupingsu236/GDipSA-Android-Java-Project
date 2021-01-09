@@ -39,7 +39,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         yourScore.setText(String.format("Your score is %d min %d sec", minutes, seconds));
 
         TextView difficultyView = (TextView) findViewById(R.id.difficultyLevel);
-        difficultyView.setText("Leaderboard: " + difficulty + "-Mode");
+        difficultyView.setText("Leaderboard: " + difficulty);
 
         TextView firstTimeView = (TextView) findViewById(R.id.firstTime);
         firstTimeView.setText(displayAsTime(firstTime));
@@ -49,11 +49,11 @@ public class LeaderboardActivity extends AppCompatActivity {
         thirdTimeView.setText(displayAsTime(thirdTime));
 
         TextView firstNameView = (TextView) findViewById(R.id.firstName);
-        firstNameView.setText(firstName);
+        firstNameView.setText(String.format("1. " + firstName));
         TextView secondNameView = (TextView) findViewById(R.id.secondName);
-        secondNameView.setText(secondName);
+        secondNameView.setText(String.format("2. " + secondName));
         TextView thirdNameView = (TextView) findViewById(R.id.thirdName);
-        thirdNameView.setText(thirdName);
+        thirdNameView.setText(String.format("3. " + thirdName));
 
         homeBtn2 = (Button) findViewById(R.id.returnHomeBtn2);
         homeBtn2.setOnClickListener(new View.OnClickListener() {

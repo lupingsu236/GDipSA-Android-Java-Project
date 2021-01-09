@@ -68,13 +68,7 @@ public class EndGameActivity extends AppCompatActivity implements Top3DialogFrag
         thirdTime = sharedPref.getLong("thirdTime", 0);
 
         //Trigger dialog if requirements are met
-        if (millis < firstTime || (firstTime == 0)) {
-            alert.show(getSupportFragmentManager(), "Top3DialogFragment");
-        }
-        else if (millis < secondTime || (secondTime == 0)) {
-            alert.show(getSupportFragmentManager(), "Top3DialogFragment");
-        }
-        else if (millis < thirdTime || (thirdTime == 0)) {
+        if (millis < thirdTime || (thirdTime == 0)) {
             alert.show(getSupportFragmentManager(), "Top3DialogFragment");
         }
 
@@ -98,12 +92,14 @@ public class EndGameActivity extends AppCompatActivity implements Top3DialogFrag
         });
 
         leaderboardBtn = (Button) findViewById(R.id.leaderboardBtn);
+        leaderboardBtn.setText("Leaderboard: " + gameDifficultyString);
         leaderboardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
                 Intent intent = new Intent(view.getContext(), LeaderboardActivity.class);
                 intent.putExtra("difficulty", gameDifficultyString);
+                intent.putExtra("millis", millis);
                 view.getContext().startActivity(intent);
             }
         });

@@ -2,8 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/app_background_image"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <TextView
         android:id="@+id/yourScore"
@@ -11,110 +20,130 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="Your score is 00 min 00 sec"
-        android:textSize="25dp"
+        android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@+id/firstName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.65" />
+        app:layout_constraintVertical_bias="0.55"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
     <TextView
         android:id="@+id/difficultyLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="Leaderboard: Easy-Mode"
-        android:textSize="30dp"
+        android:text="@string/leaderboard"
+        android:textSize="46sp"
         app:layout_constraintBottom_toTopOf="@+id/firstName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
+        app:layout_constraintVertical_bias="0.90"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
     <TextView
         android:id="@+id/firstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="400dp"
-        android:text="1. Apple"
-        android:textSize="30dp"
+        android:layout_marginBottom="370dp"
+        android:text="@string/placeholder"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
     <TextView
         android:id="@+id/firstTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="400dp"
+        android:layout_marginBottom="370dp"
         android:text="0 min 30 sec"
-        android:textSize="30dp"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
     <TextView
         android:id="@+id/secondName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="340dp"
-        android:text="2. Pear"
-        android:textSize="30dp"
+        android:layout_marginBottom="310dp"
+        android:text="@string/placeholder"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
     <TextView
         android:id="@+id/secondTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="340dp"
+        android:layout_marginBottom="310dp"
         android:text="1 min 30 sec"
-        android:textSize="30dp"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
     <TextView
         android:id="@+id/thirdName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="280dp"
-        android:text="3. Guava"
-        android:textSize="30dp"
+        android:layout_marginBottom="250dp"
+        android:text="@string/placeholder"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
     <TextView
         android:id="@+id/thirdTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="280dp"
+        android:layout_marginBottom="250dp"
         android:text="2 min 00 sec"
-        android:textSize="30dp"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/design_default_color_error"
+        android:fontFamily="cursive"/>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/returnHomeBtn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home"
+        android:paddingHorizontal="20sp"
+        android:text="Back To Start"
+        android:textSize="28sp"
+        android:textColor="@color/white"
+        android:background="@drawable/start_button_shape"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/thirdName"
-        app:layout_constraintVertical_bias="0.1"></Button>
+        app:layout_constraintVertical_bias="0.2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

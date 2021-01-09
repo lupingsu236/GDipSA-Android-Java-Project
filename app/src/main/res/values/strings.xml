@@ -14,7 +14,8 @@
     <string name="select_difficulty">Please select a difficulty before starting</string>
     <string name="matches">Matches</string>
     <string name="timer">0:00</string>
-    <string name="leaderboard">Leaderboard</string>
+    <string name="leaderboard">Leaderboard: Normal</string>
+    <string name="placeholder">0. Player</string>
     <string name="congrats_top3">Congrats! You are in Top 3! \nEnter your name for the leaderboard:</string>
     <string name="player">Player</string>
 </resources>
