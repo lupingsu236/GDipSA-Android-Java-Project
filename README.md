@@ -12,7 +12,7 @@ Features for this game include:
 5. Game Pause and Restart 
 6. LeaderBoard (3 fastest timings for each difficulty level)
 
-## My contributions to the Project
+## My Contributions to the Project
 My main contributions include: 
 1. Layout for the pictures retrieval activity 
 2. Background music 
